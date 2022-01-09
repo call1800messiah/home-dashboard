@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "home-dashboard-e3bb2": {
+      "hosting": {
+        "recipes": [
+          "home-dashboard-e3bb2"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "home-dashboard-e3bb2"
+  }
+}
