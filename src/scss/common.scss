@@ -1,0 +1,17 @@
+@import './variables.scss';
+
+.container {
+  margin: $content-spacing auto $content-spacing;
+  max-width: $container-width + ($container-padding * 2);
+  padding-left: $container-padding;
+  padding-right: $container-padding;
+  width: 100%;
+
+  &.small { max-width: $container-width-small + ($container-padding * 2); }
+  &.medium { max-width: $container-width-medium + ($container-padding * 2); }
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}

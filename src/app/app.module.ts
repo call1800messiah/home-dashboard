@@ -2,6 +2,7 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeDE from '@angular/common/locales/de';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
@@ -31,7 +32,8 @@ registerLocaleData(localeDE, 'de');
     BrowserModule,
     AppRoutingModule,
     CoreModule,
-    SharedModule
+    SharedModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },

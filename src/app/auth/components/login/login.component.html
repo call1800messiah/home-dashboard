@@ -1,17 +1,27 @@
-<div class="wrapper">
+<div class="container small">
   <form [formGroup]="loginForm" (ngSubmit)="login()">
-    <div class="form-group">
-      <input type="email" id="email" formControlName="email" required>
-      <label for="email">E-Mail</label>
-    </div>
+    <mat-card>
+      <mat-card-title>
+        Login
+      </mat-card-title>
 
-    <div class="form-group">
-      <input type="password" id="password" formControlName="password" required>
-      <label for="password">Passwort</label>
-    </div>
+      <mat-card-content>
+        <div class="flex-column">
+          <mat-form-field appearance="fill">
+            <mat-label>E-Mail</mat-label>
+            <input matInput type="email" id="email" formControlName="email" required>
+          </mat-form-field>
 
-    <button type="submit" class="btn" [disabled]="!loginForm.valid">
-      Login
-    </button>
+          <mat-form-field appearance="fill">
+            <mat-label>Passwort</mat-label>
+            <input matInput type="password" id="password" formControlName="password" required>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" class="btn" [disabled]="!loginForm.valid">
+            Login
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </form>
 </div>
