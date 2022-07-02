@@ -1,7 +1,7 @@
 {
   "hosting": {
-    "target": "recipes",
-    "public": "dist/recipes",
+    "target": "home-dashboard",
+    "public": "dist/home-dashboard",
     "ignore": [
       "**/.*"
     ],
