@@ -29,7 +29,7 @@ export class ApiService {
   }
 
   getDataFromCollection(collectionID: string, queryFunction?: QueryFn<firebase.firestore.DocumentData>): Observable<any> {
-    return this.afs.collection(collectionID, queryFunction).snapshotChanges();
+    return this.afs.collection(collectionID, queryFunction).valueChanges({ idField: 'id' });
   }
 
   getItemFromCollection(path: string): Observable<any> {
