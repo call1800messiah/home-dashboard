@@ -1,0 +1,22 @@
+<div class="container">
+  <h1>{{recipe.name}}</h1>
+  <mat-card *ngIf="recipe">
+    <mat-card-content>
+      <div class="time">
+        <app-recipe-time [time]="recipe.time"></app-recipe-time>
+      </div>
+
+      <div class="summary">
+        {{recipe.summary}}
+      </div>
+
+      <h2>Zutaten</h2>
+      <app-ingredient-list [ingredients]="recipe.ingredients"></app-ingredient-list>
+
+      <div class="instructions">
+        <h2>Zubereitung</h2>
+        {{recipe.instructions}}
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

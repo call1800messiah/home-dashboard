@@ -5,6 +5,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 
 
 
@@ -16,7 +19,10 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
+    MatRippleModule,
+    MatTableModule,
     ReactiveFormsModule,
   ],
   exports: [
@@ -25,7 +31,10 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
+    MatRippleModule,
+    MatTableModule,
     ReactiveFormsModule,
   ]
 })

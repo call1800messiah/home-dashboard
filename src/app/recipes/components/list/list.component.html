@@ -1,9 +1,14 @@
 <div class="container">
-  <mat-card *ngFor="let recipe of recipes$ | async">
-    <mat-card-title>{{recipe.name}}</mat-card-title>
+  <mat-card *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
+    <mat-card-title class="title">{{recipe.name}}</mat-card-title>
+
     <mat-card-content>
+      <div class="time">
+        <app-recipe-time [time]="recipe.time"></app-recipe-time>
+      </div>
       {{recipe.summary}}
     </mat-card-content>
+
     <mat-card-footer>
       <div class="ingredients" *ngIf="recipe.ingredients.length > 0">
         Zutaten:

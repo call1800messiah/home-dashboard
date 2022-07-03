@@ -26,10 +26,7 @@ export class RecipeService {
   static deserializeRecipes([recipes, ingredients]: [any, Ingredient[]]): Recipe[] {
     return recipes.reduce((all: any, recipeData: any) => {
       const recipeIngredients = Object.entries(recipeData.ingredients).reduce((allI: any, [id, amount]: any) => {
-        const ingredient = ingredients.find((ing) => {
-          console.log(ing.id, id);
-          return ing.id === id
-        });
+        const ingredient = ingredients.find((ing) => ing.id === id);
         if (ingredient && recipeData.ingredientUnits[id]) {
           allI.push({
             amount: amount,
@@ -43,15 +40,22 @@ export class RecipeService {
       all.push({
         id: recipeData.id,
         ingredients: recipeIngredients,
+        instructions: recipeData.instructions,
         name: recipeData.name,
         summary: recipeData.summary,
         time: {
           hours: Math.floor(recipeData.time),
-          minutes: recipeData.time % 1 * 60,
+          minutes: Math.floor(recipeData.time % 1 * 60),
         },
-      })
+      });
       return all;
     }, []);
+  }
+
+  getRecipeById(id: string): Observable<Recipe|undefined> {
+    return this.getRecipes().pipe(
+      map((recipes) => recipes.find(recipe => recipe.id === id))
+    );
   }
 
   getRecipes(): Observable<Recipe[]> {
