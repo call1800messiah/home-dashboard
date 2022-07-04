@@ -6,6 +6,7 @@ import { SharedModule } from '../shared/shared.module';
 import { RecipeComponent } from './components/recipe/recipe.component';
 import { RecipeTimeComponent } from './components/recipe-time/recipe-time.component';
 import { IngredientListComponent } from './components/ingredient-list/ingredient-list.component';
+import { EditRecipeComponent } from './components/edit-recipe/edit-recipe.component';
 
 
 
@@ -14,7 +15,8 @@ import { IngredientListComponent } from './components/ingredient-list/ingredient
     ListComponent,
     RecipeComponent,
     RecipeTimeComponent,
-    IngredientListComponent
+    IngredientListComponent,
+    EditRecipeComponent
   ],
   imports: [
     SharedModule,

@@ -1,27 +1,26 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { Recipe } from '../models/recipe';
 import { ApiService } from '../../core/services/api.service';
 import { Ingredient } from '../models/ingredient';
+import { IngredientService } from './ingredient.service';
+import { RecipeDbo } from '../models/recipe-dbo';
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipeService {
-  private ingredients$!: BehaviorSubject<Ingredient[]>;
+  static readonly collection = 'recipes';
   private recipes$!: BehaviorSubject<Recipe[]>;
 
   constructor(
-    private api: ApiService
+    private api: ApiService,
+    private ingredientsService: IngredientService,
   ) {}
-
-  static deserializeIngredients(ingredients: any): Ingredient[] {
-    return ingredients.reduce((all: any, ingredientData: any) => {
-      all.push(ingredientData);
-      return all;
-    }, []);
-  }
 
   static deserializeRecipes([recipes, ingredients]: [any, Ingredient[]]): Recipe[] {
     return recipes.reduce((all: any, recipeData: any) => {
@@ -52,6 +51,25 @@ export class RecipeService {
     }, []);
   }
 
+  static serializeRecipe(recipe: Omit<Recipe, 'id'>): RecipeDbo {
+    let ingredients: Record<string, number> = {};
+    let ingredientUnits: Record<string, string> = {};
+
+    recipe.ingredients?.forEach((requirement) => {
+      ingredients[requirement.ingredient.id] = requirement.amount;
+      ingredientUnits[requirement.ingredient.id] = requirement.unit;
+    });
+
+    return {
+      ingredients,
+      ingredientUnits,
+      instructions: recipe.instructions,
+      name: recipe.name,
+      summary: recipe.summary,
+      time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60)
+    };
+  }
+
   getRecipeById(id: string): Observable<Recipe|undefined> {
     return this.getRecipes().pipe(
       map((recipes) => recipes.find(recipe => recipe.id === id))
@@ -62,8 +80,8 @@ export class RecipeService {
     if (!this.recipes$) {
       this.recipes$ = new BehaviorSubject<Recipe[]>([]);
       combineLatest([
-        this.api.getDataFromCollection('recipes'),
-        this.getIngredients()
+        this.api.getDataFromCollection(RecipeService.collection),
+        this.ingredientsService.getIngredients()
       ]).pipe(
         map(RecipeService.deserializeRecipes)
       ).subscribe((recipes: Recipe[]) => {
@@ -74,16 +92,12 @@ export class RecipeService {
     return this.recipes$.asObservable();
   }
 
-  getIngredients(): Observable<Ingredient[]> {
-    if (!this.ingredients$) {
-      this.ingredients$ = new BehaviorSubject<Ingredient[]>([]);
-      this.api.getDataFromCollection('ingredients').pipe(
-        map(RecipeService.deserializeIngredients)
-      ).subscribe((ingredients: Ingredient[]) => {
-        this.ingredients$.next(ingredients);
-      })
+  storeRecipe(recipe: Omit<Recipe, 'id'>, id?: string) {
+    const recipeDBO = RecipeService.serializeRecipe(recipe);
+    if (id) {
+      this.api.updateDocumentInCollection(id, RecipeService.collection, recipeDBO);
+    } else {
+      this.api.addDocumentToCollection(recipeDBO, RecipeService.collection);
     }
-
-    return this.ingredients$.asObservable();
   }
 }

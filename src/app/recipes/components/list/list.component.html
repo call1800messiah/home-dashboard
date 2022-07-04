@@ -1,4 +1,8 @@
 <div class="container">
+  <button mat-fab type="button" color="primary" (click)="addRecipe()">
+    <mat-icon>add</mat-icon>
+  </button>
+
   <mat-card *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
     <mat-card-title class="title">{{recipe.name}}</mat-card-title>
 

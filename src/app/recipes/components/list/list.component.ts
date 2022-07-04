@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../../models/recipe';
+import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
 
 
 
@@ -16,6 +18,7 @@ export class ListComponent implements OnInit {
   recipes$: Observable<Recipe[]>;
 
   constructor(
+    private dialog: MatDialog,
     private recipeService: RecipeService,
     private router: Router,
   ) {
@@ -23,6 +26,16 @@ export class ListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+
+  addRecipe(): void {
+    const dialogRef = this.dialog.open(EditRecipeComponent, {
+      width: '500px'
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(result);
+    });
   }
 
 
