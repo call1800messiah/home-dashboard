@@ -7,6 +7,7 @@ import { ApiService } from '../../core/services/api.service';
 import { Ingredient } from '../models/ingredient';
 import { IngredientService } from './ingredient.service';
 import { RecipeDbo } from '../models/recipe-dbo';
+import { DataService } from '../../core/services/data.service';
 
 
 
@@ -19,6 +20,7 @@ export class RecipeService {
 
   constructor(
     private api: ApiService,
+    private data: DataService,
     private ingredientsService: IngredientService,
   ) {}
 
@@ -92,12 +94,7 @@ export class RecipeService {
     return this.recipes$.asObservable();
   }
 
-  storeRecipe(recipe: Omit<Recipe, 'id'>, id?: string) {
-    const recipeDBO = RecipeService.serializeRecipe(recipe);
-    if (id) {
-      this.api.updateDocumentInCollection(id, RecipeService.collection, recipeDBO);
-    } else {
-      this.api.addDocumentToCollection(recipeDBO, RecipeService.collection);
-    }
+  storeRecipe(recipe: Omit<Recipe, 'id'>, id?: string): Promise<boolean> {
+    return this.data.store(RecipeService.serializeRecipe(recipe), RecipeService.collection, id);
   }
 }
