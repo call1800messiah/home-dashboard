@@ -1,5 +1,5 @@
 <div class="edit-recipe">
-  <form [formGroup]="recipeForm" (ngSubmit)="save()">
+  <form [formGroup]="recipeForm" (ngSubmit)="save()" class="stacked-form">
     <mat-form-field appearance="fill">
       <input matInput type="text" id="name" formControlName="name" required />
       <mat-label>Name</mat-label>
@@ -53,7 +53,9 @@
       </div>
     </fieldset>
 
-    <button type="submit" mat-raised-button color="primary">Speichern</button>
-    <button type="button" mat-raised-button color="accent" (click)="close()">Abbrechen</button>
+    <div class="controls">
+      <button type="submit" mat-raised-button color="primary">Speichern</button>
+      <button type="button" mat-raised-button color="accent" (click)="close()">Abbrechen</button>
+    </div>
   </form>
 </div>

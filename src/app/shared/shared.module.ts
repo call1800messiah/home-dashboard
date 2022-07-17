@@ -9,6 +9,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
 
 
@@ -24,6 +25,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatIconModule,
     MatInputModule,
     MatRippleModule,
+    MatSelectModule,
     MatTableModule,
     ReactiveFormsModule,
   ],
@@ -37,6 +39,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatIconModule,
     MatInputModule,
     MatRippleModule,
+    MatSelectModule,
     MatTableModule,
     ReactiveFormsModule,
   ]

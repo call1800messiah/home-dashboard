@@ -1,0 +1,22 @@
+<div class="edit-ingredient">
+  <form [formGroup]="ingredientForm" (ngSubmit)="save()" class="stacked-form">
+    <mat-form-field appearance="fill">
+      <input matInput type="text" id="name" formControlName="name" required />
+      <mat-label>Name</mat-label>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-select id="type" formControlName="type" required>
+        <mat-option [value]="type['key']" *ngFor="let type of ingredientTypes;">
+          {{type['value']}}
+        </mat-option>
+      </mat-select>
+      <mat-label>Typ</mat-label>
+    </mat-form-field>
+
+    <div class="controls">
+      <button mat-raised-button color="primary" type="submit">Speichern</button>
+      <button mat-raised-button color="accent" type="button" (click)="close()">Abbrechen</button>
+    </div>
+  </form>
+</div>

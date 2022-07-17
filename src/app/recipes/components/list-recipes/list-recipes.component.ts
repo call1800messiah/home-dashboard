@@ -10,11 +10,11 @@ import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
 
 
 @Component({
-  selector: 'app-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  selector: 'app-list-recipes',
+  templateUrl: './list-recipes.component.html',
+  styleUrls: ['./list-recipes.component.scss']
 })
-export class ListComponent implements OnInit {
+export class ListRecipesComponent implements OnInit {
   recipes$: Observable<Recipe[]>;
 
   constructor(
@@ -40,6 +40,6 @@ export class ListComponent implements OnInit {
 
 
   goToRecipe(id: string) {
-    this.router.navigate([`recipes/${id}`]);
+    this.router.navigate([`recipes/recipe/${id}`]);
   }
 }

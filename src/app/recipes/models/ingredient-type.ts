@@ -1,1 +1,1 @@
-export type IngredientType = 'dairy' | 'fish' | 'fruit' | 'meat' | 'spice' | 'vegetable' | 'fluid' | 'grain';
+export type IngredientType = 'dairy' | 'fish' | 'fluid' | 'fruit' | 'grain' | 'meat' | 'spice' | 'vegetable';

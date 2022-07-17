@@ -4,6 +4,8 @@ import { map } from 'rxjs/operators';
 
 import { Ingredient } from '../models/ingredient';
 import { ApiService } from '../../core/services/api.service';
+import { UtilService } from '../../core/services/util.service';
+import { DataService } from '../../core/services/data.service';
 
 
 
@@ -12,10 +14,21 @@ import { ApiService } from '../../core/services/api.service';
 })
 export class IngredientService {
   static readonly collection = 'ingredients';
+  static ingredientTypes = {
+    dairy: 'Milchprodukt',
+    fish: 'Fisch',
+    fluid: 'Flüssigkeit',
+    fruit: 'Obst',
+    grain: 'Getreide',
+    meat: 'Fleisch',
+    spice: 'Gewürz',
+    vegetable: 'Gemüse'
+  };
   private ingredients$!: BehaviorSubject<Ingredient[]>;
 
   constructor(
-    private api: ApiService
+    private api: ApiService,
+    private data: DataService,
   ) {}
 
   static deserializeIngredients(ingredients: any): Ingredient[] {
@@ -29,12 +42,17 @@ export class IngredientService {
     if (!this.ingredients$) {
       this.ingredients$ = new BehaviorSubject<Ingredient[]>([]);
       this.api.getDataFromCollection(IngredientService.collection).pipe(
-        map(IngredientService.deserializeIngredients)
+        map(IngredientService.deserializeIngredients),
+        map((ingredients) => ingredients.sort(UtilService.orderByName)),
       ).subscribe((ingredients: Ingredient[]) => {
         this.ingredients$.next(ingredients);
       })
     }
 
     return this.ingredients$.asObservable();
+  }
+
+  storeIngredient(ingredient: Omit<Ingredient, 'id'>, id?: string): Promise<boolean> {
+    return this.data.store(ingredient, IngredientService.collection, id);
   }
 }
