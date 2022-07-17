@@ -1,1 +1,59 @@
-<p>add-recipe works!</p>
+<div class="edit-recipe">
+  <form [formGroup]="recipeForm" (ngSubmit)="save()">
+    <mat-form-field appearance="fill">
+      <input matInput type="text" id="name" formControlName="name" required />
+      <mat-label>Name</mat-label>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <input matInput type="time" id="time" formControlName="time" required />
+      <mat-label>Zubereitungszeit</mat-label>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <textarea matInput id="summary" formControlName="summary" required></textarea>
+      <mat-label>Kurzbeschreibung</mat-label>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <textarea matInput id="instructions" formControlName="instructions" required></textarea>
+      <mat-label>Anleitung</mat-label>
+    </mat-form-field>
+
+    <fieldset>
+      <legend>Zutaten</legend>
+      <div class="ingredient" *ngFor="let requirement of ingredients">
+        <div class="name">
+          {{requirement.ingredient.name}}
+        </div>
+        <div class="amount">
+          <mat-form-field appearance="fill">
+            <input
+              type="number"
+              matInput
+              id="ing-{{requirement.ingredient.id}}-amo"
+              formControlName="ing-{{requirement.ingredient.id}}-amo"
+              required
+            />
+            <mat-label>Menge</mat-label>
+          </mat-form-field>
+        </div>
+        <div class="unit">
+          <mat-form-field appearance="fill">
+            <input
+              type="text"
+              matInput
+              id="ing-{{requirement.ingredient.id}}-uni"
+              formControlName="ing-{{requirement.ingredient.id}}-uni"
+              required
+            />
+            <mat-label>Einheit</mat-label>
+          </mat-form-field>
+        </div>
+        <button class="delete-requirement" type="button" mat-mini-fab color="warn" (click)="removeIngredient(requirement)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </fieldset>
+
+    <button type="submit" mat-raised-button color="primary">Speichern</button>
+    <button type="button" mat-raised-button color="accent" (click)="close()">Abbrechen</button>
+  </form>
+</div>

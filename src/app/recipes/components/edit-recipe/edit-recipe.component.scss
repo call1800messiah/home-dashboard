@@ -1,0 +1,29 @@
+.edit-recipe {
+  form {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  mat-form-field {
+    display: block;
+    width: 100%;
+  }
+
+  fieldset {
+    display: flex;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .ingredient {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .name,
+    .amount,
+    .unit {
+      width: 30%;
+    }
+  }
+}

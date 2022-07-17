@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription, switchMap } from 'rxjs';
 
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../../models/recipe';
+import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
 
 
 
@@ -17,6 +19,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
   private recipeSub!: Subscription;
 
   constructor(
+    private dialog: MatDialog,
     private recipeService: RecipeService,
     private route: ActivatedRoute,
   ) {}
@@ -35,5 +38,19 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.recipeSub.unsubscribe();
+  }
+
+
+
+  editRecipe(): void {
+    const dialogRef = this.dialog.open(EditRecipeComponent, {
+      data: {
+        recipe: this.recipe,
+      },
+      width: '500px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(result);
+    });
   }
 }
