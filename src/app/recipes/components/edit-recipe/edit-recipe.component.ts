@@ -31,7 +31,7 @@ export class EditRecipeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.data.recipe) {
+    if (this.data?.recipe) {
       const recipe = this.data.recipe;
       this.ingredients = [...recipe.ingredients];
       this.recipeForm.patchValue({
@@ -80,7 +80,7 @@ export class EditRecipeComponent implements OnInit {
         minutes: parseInt(time[1], 10),
       },
     };
-    this.recipeService.storeRecipe(recipe, this.data.recipe?.id).then(result => {
+    this.recipeService.storeRecipe(recipe, this.data?.recipe?.id).then(result => {
       this.dialogRef.close(result);
     });
   }
