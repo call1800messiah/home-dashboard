@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
+import firebase from 'firebase/compat/app';
+import FieldValue = firebase.firestore.FieldValue;
 
 import { Recipe } from '../models/recipe';
 import { ApiService } from '../../core/services/api.service';
@@ -53,25 +55,6 @@ export class RecipeService {
     }, []);
   }
 
-  static serializeRecipe(recipe: Omit<Recipe, 'id'>): RecipeDbo {
-    let ingredients: Record<string, number> = {};
-    let ingredientUnits: Record<string, string> = {};
-
-    recipe.requirements?.forEach((requirement) => {
-      ingredients[requirement.ingredient.id] = requirement.amount;
-      ingredientUnits[requirement.ingredient.id] = requirement.unit;
-    });
-
-    return {
-      ingredients,
-      ingredientUnits,
-      instructions: recipe.instructions,
-      name: recipe.name,
-      summary: recipe.summary,
-      time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60)
-    };
-  }
-
   getRecipeById(id: string): Observable<Recipe|undefined> {
     return this.getRecipes().pipe(
       map((recipes) => recipes.find(recipe => recipe.id === id))
@@ -94,7 +77,42 @@ export class RecipeService {
     return this.recipes$.asObservable();
   }
 
+  serializeRecipe(recipe: Omit<Recipe, 'id'>, recipeId?: string): RecipeDbo {
+    let ingredients: Record<string, number | FieldValue> = {};
+    let ingredientUnits: Record<string, string | FieldValue> = {};
+
+    recipe.requirements?.forEach((requirement) => {
+      ingredients[requirement.ingredient.id] = requirement.amount;
+      ingredientUnits[requirement.ingredient.id] = requirement.unit;
+    });
+
+    if (recipeId) {
+      this.getRecipeById(recipeId).pipe(
+        take(1),
+      ).subscribe((currentRecipe) => {
+        if (!currentRecipe) {
+          return;
+        }
+        currentRecipe.requirements.forEach((requirement) => {
+          if (!ingredients[requirement.ingredient.id]) {
+            ingredients[requirement.ingredient.id] = FieldValue.delete();
+            ingredientUnits[requirement.ingredient.id] = FieldValue.delete();
+          }
+        });
+      })
+    }
+
+    return {
+      ingredients,
+      ingredientUnits,
+      instructions: recipe.instructions,
+      name: recipe.name,
+      summary: recipe.summary,
+      time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60)
+    };
+  }
+
   storeRecipe(recipe: Omit<Recipe, 'id'>, id?: string): Promise<boolean> {
-    return this.data.store(RecipeService.serializeRecipe(recipe), RecipeService.collection, id);
+    return this.data.store(this.serializeRecipe(recipe, id), RecipeService.collection, id);
   }
 }
