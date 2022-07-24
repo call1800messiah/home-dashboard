@@ -1,8 +1,10 @@
 <aside class="sidebar">
-  <nav class="flex-column">
-    <a mat-button href="/">Dashboard</a>
-  </nav>
-  <nav class="flex-column">
-    <a mat-button href="/recipes">Rezepte</a>
-  </nav>
+  <div *ngIf="isLoggedIn | async">
+    <nav class="flex-column">
+      <a mat-button href="/">Dashboard</a>
+    </nav>
+    <nav class="flex-column">
+      <a mat-button href="/recipes">Rezepte</a>
+    </nav>
+  </div>
 </aside>
