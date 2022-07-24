@@ -7,7 +7,7 @@ import { IngredientRequirement } from '../../models/ingredient-requirement';
   styleUrls: ['./list-ingredient-requirements.component.scss']
 })
 export class ListIngredientRequirementsComponent implements OnInit {
-  @Input() ingredients!: IngredientRequirement[];
+  @Input() requirements!: IngredientRequirement[];
   displayedColumns = ['name', 'amount'];
   portions: number = 4;
 

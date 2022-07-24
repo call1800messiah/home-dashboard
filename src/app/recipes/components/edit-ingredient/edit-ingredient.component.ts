@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EditIngredientData } from '../../models/edit-ingredient-data';
 import { IngredientService } from '../../services/ingredient.service';
 import { Ingredient } from '../../models/ingredient';
-import { FormControl, FormGroup, UntypedFormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-ingredient',
@@ -28,6 +28,10 @@ export class EditIngredientComponent implements OnInit {
   ngOnInit(): void {
     if (this.data?.ingredient?.id) {
       this.ingredientForm.patchValue(this.data.ingredient);
+    } else if (this.data.newName) {
+      this.ingredientForm.patchValue({
+        name: this.data.newName,
+      });
     }
   }
 
@@ -42,6 +46,6 @@ export class EditIngredientComponent implements OnInit {
 
     this.ingredientService.storeIngredient(ingredient, this.data?.ingredient?.id).then((result) => {
       this.dialogRef.close(result);
-    })
+    });
   }
 }

@@ -3,7 +3,7 @@ import { IngredientRequirement } from './ingredient-requirement';
 
 export interface Recipe {
   id: string;
-  ingredients: IngredientRequirement[];
+  requirements: IngredientRequirement[];
   instructions: string;
   name: string;
   summary: string;

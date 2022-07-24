@@ -40,7 +40,7 @@ export class RecipeService {
 
       all.push({
         id: recipeData.id,
-        ingredients: recipeIngredients,
+        requirements: recipeIngredients,
         instructions: recipeData.instructions,
         name: recipeData.name,
         summary: recipeData.summary,
@@ -57,7 +57,7 @@ export class RecipeService {
     let ingredients: Record<string, number> = {};
     let ingredientUnits: Record<string, string> = {};
 
-    recipe.ingredients?.forEach((requirement) => {
+    recipe.requirements?.forEach((requirement) => {
       ingredients[requirement.ingredient.id] = requirement.amount;
       ingredientUnits[requirement.ingredient.id] = requirement.unit;
     });

@@ -1,4 +1,4 @@
-<div class="ingredient-list" *ngIf="ingredients">
+<div class="ingredient-list" *ngIf="requirements">
   <div class="portions">
     <mat-form-field appearance="fill">
       <input matInput [(ngModel)]="portions" type="number" step="1" min="1" />
@@ -6,7 +6,7 @@
     </mat-form-field>
   </div>
 
-  <table mat-table [dataSource]="ingredients" class="table">
+  <table mat-table [dataSource]="requirements" class="table">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Zutat</th>
       <td mat-cell *matCellDef="let ingredient">{{ingredient.ingredient.name}}</td>

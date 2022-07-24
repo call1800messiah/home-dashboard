@@ -38,6 +38,12 @@ export class IngredientService {
     }, []);
   }
 
+  getIngredientByName(name: string): Observable<Ingredient | undefined> {
+    return this.ingredients$.pipe(
+      map((ingredients) => ingredients.find((ingredient) => ingredient.name === name))
+    )
+  }
+
   getIngredients(): Observable<Ingredient[]> {
     if (!this.ingredients$) {
       this.ingredients$ = new BehaviorSubject<Ingredient[]>([]);

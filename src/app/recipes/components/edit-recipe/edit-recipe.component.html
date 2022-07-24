@@ -19,7 +19,7 @@
 
     <fieldset>
       <legend>Zutaten</legend>
-      <div class="ingredient" *ngFor="let requirement of ingredients">
+      <div class="ingredient" *ngFor="let requirement of requirements">
         <div class="name">
           {{requirement.ingredient.name}}
         </div>
@@ -49,6 +49,46 @@
         </div>
         <button class="delete-requirement" type="button" mat-mini-fab color="warn" (click)="removeIngredient(requirement)">
           <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <div class="ingredient new">
+        <div class="name">
+          <mat-form-field appearance="fill">
+            <input matInput type="text" id="ing-new-name" formControlName="ing-new-name" [matAutocomplete]="ingredientsAuto" />
+            <mat-label>Name</mat-label>
+            <mat-autocomplete #ingredientsAuto="matAutocomplete" [displayWith]="ingredientDisplayFn">
+              <mat-option *ngFor="let ingredient of ingredients$ | async" [value]="ingredient">
+                {{ingredient.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="amount">
+          <mat-form-field appearance="fill">
+            <input
+              type="number"
+              matInput
+              id="ing-new-amo"
+              formControlName="ing-new-amo"
+              required
+            />
+            <mat-label>Menge</mat-label>
+          </mat-form-field>
+        </div>
+        <div class="unit">
+          <mat-form-field appearance="fill">
+            <input
+              type="text"
+              matInput
+              id="ing-new-uni"
+              formControlName="ing-new-uni"
+              required
+            />
+            <mat-label>Einheit</mat-label>
+          </mat-form-field>
+        </div>
+        <button class="add-requirement" type="button" mat-mini-fab color="primary" (click)="addIngredient()">
+          <mat-icon>add</mat-icon>
         </button>
       </div>
     </fieldset>

@@ -43,14 +43,11 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
 
   editRecipe(): void {
-    const dialogRef = this.dialog.open(EditRecipeComponent, {
+    this.dialog.open(EditRecipeComponent, {
       data: {
         recipe: this.recipe,
       },
-      width: '500px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
+      width: '750px',
     });
   }
 }
