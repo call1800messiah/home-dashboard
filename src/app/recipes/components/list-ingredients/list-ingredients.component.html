@@ -1,5 +1,8 @@
 <div class="container">
   <h2>Zutaten</h2>
+  <button class="button-add-ingredient" color="primary" mat-fab type="button" (click)="addIngredient()">
+    <mat-icon>add</mat-icon>
+  </button>
   <mat-card
     class="ingredient"
     *ngFor="let ingredient of ingredients$ | async"

@@ -1,3 +1,5 @@
+@import "./src/scss/variables.scss";
+
 .ingredient {
   align-items: center;
   cursor: pointer;
@@ -21,4 +23,10 @@
   right: 16px;
   top: 16px;
   transition: opacity 0.4s;
+}
+
+.button-add-ingredient {
+  position: absolute;
+  right: $container-padding;
+  top: -16px;
 }

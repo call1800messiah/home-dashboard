@@ -5,6 +5,7 @@
   max-width: $container-width + ($container-padding * 2);
   padding-left: $container-padding;
   padding-right: $container-padding;
+  position: relative;
   width: 100%;
 
   &.small { max-width: $container-width-small + ($container-padding * 2); }

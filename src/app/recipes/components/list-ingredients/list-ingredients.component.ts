@@ -24,15 +24,18 @@ export class ListIngredientsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  addIngredient(): void {
+    this.dialog.open(EditIngredientComponent, {
+      width: '500px',
+    });
+  }
+
   editIngredient(ingredient: Ingredient): void {
-    const dialogRef = this.dialog.open(EditIngredientComponent, {
+    this.dialog.open(EditIngredientComponent, {
       data: {
         ingredient
       },
       width: '500px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
     });
   }
 }
