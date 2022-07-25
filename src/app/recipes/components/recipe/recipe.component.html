@@ -1,5 +1,8 @@
 <div class="container" *ngIf="recipe">
   <h1>{{recipe.name}}</h1>
+  <button mat-fab type="button" color="accent" class="button-container-top" (click)="editRecipe()">
+    <mat-icon>edit</mat-icon>
+  </button>
   <mat-card *ngIf="recipe">
     <mat-card-content>
       <div class="time">
@@ -18,11 +21,5 @@
         {{recipe.instructions}}
       </div>
     </mat-card-content>
-
-    <mat-card-actions>
-      <button mat-icon-button type="button" color="accent" (click)="editRecipe()">
-        <mat-icon>edit</mat-icon>
-      </button>
-    </mat-card-actions>
   </mat-card>
 </div>

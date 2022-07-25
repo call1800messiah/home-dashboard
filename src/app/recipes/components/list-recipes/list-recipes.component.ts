@@ -31,7 +31,7 @@ export class ListRecipesComponent implements OnInit {
 
   addRecipe(): void {
     const dialogRef = this.dialog.open(EditRecipeComponent, {
-      width: '500px'
+      width: '750px'
     });
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
