@@ -39,3 +39,9 @@
     width: 100%;
   }
 }
+
+button.button-container-top {
+  position: absolute;
+  right: $container-padding;
+  top: -16px;
+}
