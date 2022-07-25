@@ -3,6 +3,10 @@
 .recipe {
   cursor: pointer;
   margin-top: 16px;
+
+  mat-card-content {
+    font-size: 16px;
+  }
 }
 
 .title {
@@ -17,6 +21,17 @@
 }
 
 .ingredients {
-  font-size: 12px;
+  color: lightgray;
+  font-size: 15px;
   padding: 16px;
+}
+
+.ingredient {
+  &:after {
+    content: ',';
+    display: inline;
+  }
+  &:last-child:after {
+    content: none;
+  }
 }

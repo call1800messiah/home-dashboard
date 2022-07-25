@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container medium">
   <h1>Rezepte</h1>
   <button mat-raised-button color="accent" routerLink="ingredients">Zutaten</button>
   <button mat-fab type="button" color="primary" class="button-container-top" (click)="addRecipe()">
@@ -19,8 +19,8 @@
       <div class="ingredients" *ngIf="recipe.requirements.length > 0">
         Zutaten:
         <span *ngFor="let requirement of recipe.requirements" class="ingredient">
-        {{requirement.ingredient.name}}
-      </span>
+          {{requirement.ingredient.name}}
+        </span>
       </div>
     </mat-card-footer>
   </mat-card>
