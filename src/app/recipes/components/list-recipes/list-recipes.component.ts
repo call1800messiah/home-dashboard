@@ -30,11 +30,8 @@ export class ListRecipesComponent implements OnInit {
 
 
   addRecipe(): void {
-    const dialogRef = this.dialog.open(EditRecipeComponent, {
+    this.dialog.open(EditRecipeComponent, {
       width: '750px'
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
     });
   }
 
