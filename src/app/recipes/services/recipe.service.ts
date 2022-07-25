@@ -10,6 +10,7 @@ import { Ingredient } from '../models/ingredient';
 import { IngredientService } from './ingredient.service';
 import { RecipeDbo } from '../models/recipe-dbo';
 import { DataService } from '../../core/services/data.service';
+import { IngredientRequirement } from '../models/ingredient-requirement';
 
 
 
@@ -30,7 +31,7 @@ export class RecipeService {
     return recipes.reduce((all: any, recipeData: any) => {
       const recipeIngredients = Object.entries(recipeData.ingredients).reduce((allI: any, [id, amount]: any) => {
         const ingredient = ingredients.find((ing) => ing.id === id);
-        if (ingredient && recipeData.ingredientUnits[id]) {
+        if (ingredient && recipeData.ingredientUnits[id] !== undefined) {
           allI.push({
             amount: amount,
             ingredient,
@@ -42,7 +43,10 @@ export class RecipeService {
 
       all.push({
         id: recipeData.id,
-        requirements: recipeIngredients,
+        requirements: recipeIngredients.sort((
+          a: IngredientRequirement,
+          b: IngredientRequirement
+        ) => a.ingredient.name.localeCompare(b.ingredient.name, 'de-DE')),
         instructions: recipeData.instructions,
         name: recipeData.name,
         summary: recipeData.summary,
