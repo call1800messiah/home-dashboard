@@ -89,9 +89,14 @@ export class RecipeService {
     let ingredients: Record<string, number | FieldValue> = {};
     let ingredientUnits: Record<string, string | FieldValue> = {};
 
-    recipe.requirements?.forEach((requirement) => {
-      ingredients[requirement.ingredient.id] = requirement.amount;
-      ingredientUnits[requirement.ingredient.id] = requirement.unit;
+    Object.entries(recipe).forEach(([key, value]) => {
+      const split = key.split('-');
+      if (split[0] === 'ing' && split[2] === 'amo') {
+        ingredients[split[1]] = value as unknown as number;
+      }
+      if (split[0] === 'ing' && split[2] === 'uni') {
+        ingredientUnits[split[1]] = value as unknown as string;
+      }
     });
 
     if (recipeId) {

@@ -68,7 +68,7 @@
       <div class="ingredient new">
         <div class="name">
           <mat-form-field appearance="fill">
-            <input matInput type="text" id="ing-new-name" formControlName="ing-new-name" [matAutocomplete]="ingredientsAuto" />
+            <input matInput type="text" id="new-name" formControlName="new-name" [matAutocomplete]="ingredientsAuto" />
             <mat-label>Name</mat-label>
             <mat-autocomplete #ingredientsAuto="matAutocomplete" [displayWith]="ingredientDisplayFn">
               <mat-option *ngFor="let ingredient of ingredients$ | async" [value]="ingredient">
@@ -82,8 +82,8 @@
             <input
               type="number"
               matInput
-              id="ing-new-amo"
-              formControlName="ing-new-amo"
+              id="new-amo"
+              formControlName="new-amo"
             />
             <mat-label>Menge</mat-label>
           </mat-form-field>
@@ -93,8 +93,8 @@
             <input
               type="text"
               matInput
-              id="ing-new-uni"
-              formControlName="ing-new-uni"
+              id="new-uni"
+              formControlName="new-uni"
             />
             <mat-label>Einheit</mat-label>
           </mat-form-field>

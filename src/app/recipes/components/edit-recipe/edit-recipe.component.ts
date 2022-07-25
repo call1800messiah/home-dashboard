@@ -23,9 +23,9 @@ import { AuthService } from '../../../core/services/auth.service';
 export class EditRecipeComponent implements OnInit, OnDestroy {
   requirements!: IngredientRequirement[];
   recipeForm = new UntypedFormGroup({
-    'ing-new-name': new FormControl<string | Ingredient>(''),
-    'ing-new-amo': new FormControl(0),
-    'ing-new-uni': new FormControl(''),
+    'new-name': new FormControl<string | Ingredient>(''),
+    'new-amo': new FormControl(0),
+    'new-uni': new FormControl(''),
     instructions: new FormControl(''),
     name: new FormControl(''),
     summary: new FormControl(''),
@@ -69,8 +69,8 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
     }
 
     this.ingredients$ = combineLatest([
-      this.recipeForm.controls['ing-new-name'].valueChanges.pipe(
-        startWith(this.recipeForm.controls['ing-new-name'].value),
+      this.recipeForm.controls['new-name'].valueChanges.pipe(
+        startWith(this.recipeForm.controls['new-name'].value),
       ),
       this.ingredientService.getIngredients(),
     ]).pipe(
@@ -84,7 +84,7 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
 
 
   async addIngredient(): Promise<void> {
-    const ingredient = this.recipeForm.controls['ing-new-name'].value;
+    const ingredient = this.recipeForm.controls['new-name'].value;
     let added: Ingredient;
     if (typeof ingredient === 'string') {
       const dialogRef = this.dialog.open(EditIngredientComponent, {
@@ -112,17 +112,17 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
     // Add the new requirement to the requirements
     const ingredientRequirement: IngredientRequirement = {
       ingredient: added,
-      amount: this.recipeForm.controls['ing-new-amo'].value,
-      unit: this.recipeForm.controls['ing-new-uni'].value,
+      amount: this.recipeForm.controls['new-amo'].value,
+      unit: this.recipeForm.controls['new-uni'].value,
     };
     this.requirements.push(ingredientRequirement);
     this.recipeForm.addControl(`ing-${added.id}-amo`, new FormControl(ingredientRequirement.amount));
     this.recipeForm.addControl(`ing-${added.id}-uni`, new FormControl(ingredientRequirement.unit));
 
     // Reset new requirement inputs
-    this.recipeForm.controls['ing-new-name'].setValue('');
-    this.recipeForm.controls['ing-new-amo'].setValue(0);
-    this.recipeForm.controls['ing-new-uni'].setValue('');
+    this.recipeForm.controls['new-name'].setValue('');
+    this.recipeForm.controls['new-amo'].setValue(0);
+    this.recipeForm.controls['new-uni'].setValue('');
   }
 
 
@@ -152,7 +152,6 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
       ...this.recipeForm.value,
       edited: new Date(),
       editedBy: this.userID,
-      requirements: this.requirements,
       time: {
         hours: parseInt(time[0], 10),
         minutes: parseInt(time[1], 10),
