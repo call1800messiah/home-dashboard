@@ -1,0 +1,37 @@
+@import '../../../../scss/variables.scss';
+
+.recipe {
+  cursor: pointer;
+  margin-top: 16px;
+
+  mat-card-content {
+    font-size: 16px;
+  }
+}
+
+.title {
+  margin-bottom: 16px;
+  padding-right: 56px;
+}
+
+.time {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+
+.ingredients {
+  color: lightgray;
+  font-size: 15px;
+  padding: 16px;
+}
+
+.ingredient {
+  &:after {
+    content: ',';
+    display: inline;
+  }
+  &:last-child:after {
+    content: none;
+  }
+}

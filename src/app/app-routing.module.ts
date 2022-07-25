@@ -17,6 +17,11 @@ const routes: Routes = [
     canLoad: [AuthGuardService],
   },
   {
+    path: 'recipes',
+    loadChildren: () => import('./recipes/recipes.module').then(m => m.RecipesModule),
+    canLoad: [AuthGuardService],
+  },
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full'

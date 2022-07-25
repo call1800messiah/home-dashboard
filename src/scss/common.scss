@@ -5,6 +5,7 @@
   max-width: $container-width + ($container-padding * 2);
   padding-left: $container-padding;
   padding-right: $container-padding;
+  position: relative;
   width: 100%;
 
   &.small { max-width: $container-width-small + ($container-padding * 2); }
@@ -14,4 +15,33 @@
 .flex-column {
   display: flex;
   flex-direction: column;
+}
+
+.stacked-form {
+  display: flex;
+  flex-wrap: wrap;
+
+  mat-form-field {
+    display: block;
+    width: 100%;
+  }
+
+  fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+button.button-container-top {
+  position: absolute;
+  right: $container-padding;
+  top: -16px;
 }

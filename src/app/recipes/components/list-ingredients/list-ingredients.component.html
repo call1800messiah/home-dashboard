@@ -1,0 +1,20 @@
+<div class="container medium">
+  <h1>Zutaten</h1>
+  <button class="button-container-top" color="primary" mat-fab type="button" (click)="addIngredient()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <mat-card
+    class="ingredient"
+    *ngFor="let ingredient of ingredients$ | async"
+    (click)="editIngredient(ingredient)"
+    mat-ripple
+  >
+    <mat-card-title>{{ingredient.name}}</mat-card-title>
+    <div class="type">
+      {{ingredientTypes[ingredient.type]}}
+    </div>
+    <button class="button-edit" mat-mini-fab type="button">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </mat-card>
+</div>

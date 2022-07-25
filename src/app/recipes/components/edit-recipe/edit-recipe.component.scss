@@ -1,0 +1,13 @@
+.edit-recipe {
+  .ingredient {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .name,
+    .amount,
+    .unit {
+      width: 30%;
+    }
+  }
+}

@@ -5,6 +5,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatRippleModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 
@@ -13,19 +19,31 @@ import { MatCardModule } from '@angular/material/card';
   imports: [
     CommonModule,
     FormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatDialogModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatTableModule,
     ReactiveFormsModule,
   ],
   exports: [
     CommonModule,
     FormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatDialogModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatTableModule,
     ReactiveFormsModule,
   ]
 })

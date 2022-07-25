@@ -1,0 +1,27 @@
+<div class="container medium">
+  <h1>Rezepte</h1>
+  <button mat-raised-button color="accent" routerLink="ingredients">Zutaten</button>
+  <button mat-fab type="button" color="primary" class="button-container-top" (click)="addRecipe()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <mat-card *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
+    <mat-card-title class="title">{{recipe.name}}</mat-card-title>
+
+    <mat-card-content>
+      <div class="time">
+        <app-recipe-time [time]="recipe.time"></app-recipe-time>
+      </div>
+      {{recipe.summary}}
+    </mat-card-content>
+
+    <mat-card-footer>
+      <div class="ingredients" *ngIf="recipe.requirements.length > 0">
+        Zutaten:
+        <span *ngFor="let requirement of recipe.requirements" class="ingredient">
+          {{requirement.ingredient.name}}
+        </span>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+</div>

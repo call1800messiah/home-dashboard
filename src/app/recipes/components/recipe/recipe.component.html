@@ -1,0 +1,25 @@
+<div class="recipe container medium" *ngIf="recipe">
+  <h1>{{recipe.name}}</h1>
+  <button mat-fab type="button" color="accent" class="button-container-top" (click)="editRecipe()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <mat-card *ngIf="recipe">
+    <mat-card-content>
+      <div class="time">
+        <app-recipe-time [time]="recipe.time"></app-recipe-time>
+      </div>
+
+      <div class="summary">
+        {{recipe.summary}}
+      </div>
+
+      <h2>Zutaten</h2>
+      <app-list-ingredient-requirements [requirements]="recipe.requirements"></app-list-ingredient-requirements>
+
+      <div class="instructions">
+        <h2>Zubereitung</h2>
+        {{recipe.instructions}}
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

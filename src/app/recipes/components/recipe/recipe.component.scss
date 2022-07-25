@@ -1,0 +1,21 @@
+.recipe {
+  mat-card-content {
+    font-size: 16px;
+  }
+}
+
+.time {
+  float: right;
+  margin-bottom: 8px;
+  margin-left: 16px;
+}
+
+.summary {
+  margin-bottom: 16px;
+  min-height: 40px;
+  white-space: pre-line;
+}
+
+.instructions {
+  white-space: pre-line;
+}
