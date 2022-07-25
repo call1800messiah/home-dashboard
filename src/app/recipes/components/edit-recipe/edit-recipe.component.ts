@@ -74,6 +74,7 @@ export class EditRecipeComponent implements OnInit {
         data: {
           newName: ingredient,
         },
+        maxHeight: '90vh',
         width: '500px',
       });
       const addedSuccessfully = await firstValueFrom(dialogRef.afterClosed());

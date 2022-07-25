@@ -47,6 +47,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       data: {
         recipe: this.recipe,
       },
+      maxHeight: '90vh',
       width: '750px',
     });
   }

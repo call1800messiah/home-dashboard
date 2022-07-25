@@ -26,6 +26,7 @@ export class ListIngredientsComponent implements OnInit {
 
   addIngredient(): void {
     this.dialog.open(EditIngredientComponent, {
+      maxHeight: '90vh',
       width: '500px',
     });
   }
@@ -35,6 +36,7 @@ export class ListIngredientsComponent implements OnInit {
       data: {
         ingredient
       },
+      maxHeight: '90vh',
       width: '500px',
     });
   }
