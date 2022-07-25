@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
-import { combineLatest, firstValueFrom, Observable, startWith } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable, startWith, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { EditRecipeData } from '../../models/edit-recipe-data';
@@ -11,6 +11,7 @@ import { Recipe } from '../../models/recipe';
 import { Ingredient } from '../../models/ingredient';
 import { IngredientService } from '../../services/ingredient.service';
 import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 
@@ -19,26 +20,37 @@ import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.comp
   templateUrl: './edit-recipe.component.html',
   styleUrls: ['./edit-recipe.component.scss']
 })
-export class EditRecipeComponent implements OnInit {
+export class EditRecipeComponent implements OnInit, OnDestroy {
   requirements!: IngredientRequirement[];
   recipeForm = new UntypedFormGroup({
-    'ing-new-name': new FormControl<string | Ingredient>(''),
-    'ing-new-amo': new FormControl(0),
-    'ing-new-uni': new FormControl(''),
+    'new-name': new FormControl<string | Ingredient>(''),
+    'new-amo': new FormControl(0),
+    'new-uni': new FormControl(''),
     instructions: new FormControl(''),
     name: new FormControl(''),
     summary: new FormControl(''),
     time: new FormControl('00:00'),
   });
   ingredients$!: Observable<Ingredient[]>;
+  private userID!: string;
+  private subscription = new Subscription();
 
   constructor(
-    public dialogRef: MatDialogRef<EditRecipeComponent>,
+    private auth: AuthService,
     @Inject(MAT_DIALOG_DATA) public data: EditRecipeData,
     private dialog: MatDialog,
-    private recipeService: RecipeService,
+    public dialogRef: MatDialogRef<EditRecipeComponent>,
     private ingredientService: IngredientService,
-  ) { }
+    private recipeService: RecipeService,
+  ) {
+    this.subscription.add(
+      this.auth.user$.subscribe((user) => {
+        if (user) {
+          this.userID = user.id;
+        }
+      })
+    );
+  }
 
   ngOnInit(): void {
     if (this.data?.recipe) {
@@ -57,8 +69,8 @@ export class EditRecipeComponent implements OnInit {
     }
 
     this.ingredients$ = combineLatest([
-      this.recipeForm.controls['ing-new-name'].valueChanges.pipe(
-        startWith(this.recipeForm.controls['ing-new-name'].value),
+      this.recipeForm.controls['new-name'].valueChanges.pipe(
+        startWith(this.recipeForm.controls['new-name'].value),
       ),
       this.ingredientService.getIngredients(),
     ]).pipe(
@@ -66,10 +78,13 @@ export class EditRecipeComponent implements OnInit {
     );
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
 
   async addIngredient(): Promise<void> {
-    const ingredient = this.recipeForm.controls['ing-new-name'].value;
+    const ingredient = this.recipeForm.controls['new-name'].value;
     let added: Ingredient;
     if (typeof ingredient === 'string') {
       const dialogRef = this.dialog.open(EditIngredientComponent, {
@@ -97,17 +112,17 @@ export class EditRecipeComponent implements OnInit {
     // Add the new requirement to the requirements
     const ingredientRequirement: IngredientRequirement = {
       ingredient: added,
-      amount: this.recipeForm.controls['ing-new-amo'].value,
-      unit: this.recipeForm.controls['ing-new-uni'].value,
+      amount: this.recipeForm.controls['new-amo'].value,
+      unit: this.recipeForm.controls['new-uni'].value,
     };
     this.requirements.push(ingredientRequirement);
     this.recipeForm.addControl(`ing-${added.id}-amo`, new FormControl(ingredientRequirement.amount));
     this.recipeForm.addControl(`ing-${added.id}-uni`, new FormControl(ingredientRequirement.unit));
 
     // Reset new requirement inputs
-    this.recipeForm.controls['ing-new-name'].setValue('');
-    this.recipeForm.controls['ing-new-amo'].setValue(0);
-    this.recipeForm.controls['ing-new-uni'].setValue('');
+    this.recipeForm.controls['new-name'].setValue('');
+    this.recipeForm.controls['new-amo'].setValue(0);
+    this.recipeForm.controls['new-uni'].setValue('');
   }
 
 
@@ -135,12 +150,17 @@ export class EditRecipeComponent implements OnInit {
     const time = this.recipeForm.value.time.split(':');
     const recipe: Recipe = {
       ...this.recipeForm.value,
+      edited: new Date(),
+      editedBy: this.userID,
       time: {
         hours: parseInt(time[0], 10),
         minutes: parseInt(time[1], 10),
       },
-      requirements: this.requirements,
     };
+    if (!this.data?.recipe?.id) {
+      recipe.author = this.userID;
+      recipe.created = recipe.edited;
+    }
     this.recipeService.storeRecipe(recipe, this.data?.recipe?.id).then(result => {
       this.dialogRef.close(result);
     });

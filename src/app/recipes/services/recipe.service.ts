@@ -42,14 +42,18 @@ export class RecipeService {
       }, []);
 
       all.push({
+        author: recipeData.author ?? '',
+        created: recipeData.created ?? '',
+        edited: recipeData.edited ?? '',
+        editedBy: recipeData.editedBy ?? '',
         id: recipeData.id,
+        instructions: recipeData.instructions ?? '',
+        name: recipeData.name || 'Missing name',
         requirements: recipeIngredients.sort((
           a: IngredientRequirement,
           b: IngredientRequirement
         ) => a.ingredient.name.localeCompare(b.ingredient.name, 'de-DE')),
-        instructions: recipeData.instructions,
-        name: recipeData.name,
-        summary: recipeData.summary,
+        summary: recipeData.summary ?? '',
         time: {
           hours: Math.floor(recipeData.time),
           minutes: Math.floor(recipeData.time % 1 * 60),
@@ -85,9 +89,14 @@ export class RecipeService {
     let ingredients: Record<string, number | FieldValue> = {};
     let ingredientUnits: Record<string, string | FieldValue> = {};
 
-    recipe.requirements?.forEach((requirement) => {
-      ingredients[requirement.ingredient.id] = requirement.amount;
-      ingredientUnits[requirement.ingredient.id] = requirement.unit;
+    Object.entries(recipe).forEach(([key, value]) => {
+      const split = key.split('-');
+      if (split[0] === 'ing' && split[2] === 'amo') {
+        ingredients[split[1]] = value as unknown as number;
+      }
+      if (split[0] === 'ing' && split[2] === 'uni') {
+        ingredientUnits[split[1]] = value as unknown as string;
+      }
     });
 
     if (recipeId) {
@@ -106,7 +115,9 @@ export class RecipeService {
       })
     }
 
-    return {
+    const recipeDBO: RecipeDbo = {
+      edited: recipe.edited,
+      editedBy: recipe.editedBy,
       ingredients,
       ingredientUnits,
       instructions: recipe.instructions,
@@ -114,6 +125,12 @@ export class RecipeService {
       summary: recipe.summary,
       time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60)
     };
+    if (!recipeId) {
+      recipeDBO.author = recipe.author;
+      recipeDBO.created = recipe.created;
+    }
+
+    return recipeDBO;
   }
 
   storeRecipe(recipe: Omit<Recipe, 'id'>, id?: string): Promise<boolean> {
