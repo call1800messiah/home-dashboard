@@ -9,11 +9,27 @@
       <mat-label>Zubereitungszeit</mat-label>
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <textarea matInput id="summary" formControlName="summary" required></textarea>
+      <textarea
+        matInput
+        id="summary"
+        formControlName="summary"
+        required
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="1"
+        cdkAutosizeMaxRows="10"
+      ></textarea>
       <mat-label>Kurzbeschreibung</mat-label>
     </mat-form-field>
     <mat-form-field appearance="fill">
-      <textarea matInput id="instructions" formControlName="instructions" required></textarea>
+      <textarea
+        matInput
+        id="instructions"
+        formControlName="instructions"
+        required
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="3"
+        cdkAutosizeMaxRows="10"
+      ></textarea>
       <mat-label>Anleitung</mat-label>
     </mat-form-field>
 
