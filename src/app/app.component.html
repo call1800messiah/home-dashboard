@@ -1,13 +1,13 @@
-<app-header></app-header>
+<app-header (toggleSidenav)="toggleSidenav()"></app-header>
 
-<mat-drawer-container hasBackdrop="false" class="drawer-container">
-  <mat-drawer #drawer mode="side" [opened]="true">
+<mat-sidenav-container hasBackdrop="false" class="drawer-container">
+  <mat-sidenav [mode]="sideNavMode" [(opened)]="sideNavOpen">
     <app-sidebar></app-sidebar>
-  </mat-drawer>
+  </mat-sidenav>
 
-  <mat-drawer-content>
+  <mat-sidenav-content>
     <main>
       <router-outlet></router-outlet>
     </main>
-  </mat-drawer-content>
-</mat-drawer-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>
