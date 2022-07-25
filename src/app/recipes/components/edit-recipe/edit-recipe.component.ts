@@ -66,6 +66,8 @@ export class EditRecipeComponent implements OnInit {
     );
   }
 
+
+
   async addIngredient(): Promise<void> {
     const ingredient = this.recipeForm.controls['ing-new-name'].value;
     let added: Ingredient;
@@ -108,13 +110,16 @@ export class EditRecipeComponent implements OnInit {
     this.recipeForm.controls['ing-new-uni'].setValue('');
   }
 
+
   close(): void {
     this.dialogRef.close(false);
   }
 
+
   ingredientDisplayFn(ingredient: Ingredient): string {
     return ingredient && ingredient.name ? ingredient.name : '';
   }
+
 
   removeIngredient(requirement: IngredientRequirement): void {
     const index = this.requirements.findIndex((req) => req.ingredient.id === requirement.ingredient.id);
@@ -124,6 +129,7 @@ export class EditRecipeComponent implements OnInit {
       this.recipeForm.removeControl(`ing-${requirement.ingredient.id}-uni`);
     }
   }
+
 
   save(): void {
     const time = this.recipeForm.value.time.split(':');
@@ -139,6 +145,8 @@ export class EditRecipeComponent implements OnInit {
       this.dialogRef.close(result);
     });
   }
+
+
 
   private static filterIngredientListByValue(value: string | Ingredient, list: Ingredient[]): Ingredient[] {
     if (typeof value !== 'string') {
