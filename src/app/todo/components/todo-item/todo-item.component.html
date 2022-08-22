@@ -1,0 +1,9 @@
+<div class="todo-item" *ngIf="item">
+  <input type="checkbox" [ngModel]="item.done" ] (change)="toggleDone()" />
+  <div class="content" (click)="toggleEdit()" *ngIf="!editing">
+    {{item.content}}
+  </div>
+  <div class="editing-content" *ngIf="editing">
+    <input type="text" class="editing-content" [ngModel]="item.content" />
+  </div>
+</div>
