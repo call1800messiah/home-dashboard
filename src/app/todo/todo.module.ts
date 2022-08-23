@@ -4,6 +4,8 @@ import { ListsComponent } from './components/lists/lists.component';
 import { ListComponent } from './components/list/list.component';
 import { TodoItemComponent } from './components/todo-item/todo-item.component';
 import { SharedModule } from '../shared/shared.module';
+import { EditTodoListComponent } from './components/edit-todo-list/edit-todo-list.component';
+import { TodoRoutingModule } from './todo-routing.module';
 
 
 
@@ -11,11 +13,13 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [
     ListsComponent,
     ListComponent,
-    TodoItemComponent
+    TodoItemComponent,
+    EditTodoListComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    TodoRoutingModule,
   ]
 })
 export class TodoModule { }

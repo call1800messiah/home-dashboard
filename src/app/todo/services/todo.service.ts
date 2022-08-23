@@ -30,9 +30,7 @@ export class TodoService {
   getTodoLists(): Observable<TodoList[]> {
     if (!this.todoLists$) {
       this.todoLists$ = new BehaviorSubject<TodoList[]>([]);
-      combineLatest([
-        this.api.getDataFromCollection(TodoService.collection)
-      ]).pipe(
+      this.api.getDataFromCollection(TodoService.collection).pipe(
         map(TodoService.deserializeTodoLists)
       ).subscribe((lists: TodoList[]) => {
         this.todoLists$.next(lists);

@@ -1,9 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription, switchMap } from 'rxjs';
+
 import { TodoList } from '../../models/todo-list';
 import { TodoService } from '../../services/todo.service';
-import { ActivatedRoute } from '@angular/router';
-import { TodoItem } from '../../models/todo-item';
+import { EditTodoListComponent } from '../edit-todo-list/edit-todo-list.component';
+
+
 
 @Component({
   selector: 'app-list',
@@ -15,6 +19,7 @@ export class ListComponent implements OnInit, OnDestroy {
   private listSub!: Subscription;
 
   constructor(
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private todoService: TodoService,
   ) { }
@@ -33,5 +38,14 @@ export class ListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.listSub.unsubscribe();
+  }
+
+  editList() {
+    this.dialog.open(EditTodoListComponent, {
+      data: {
+        list: this.list,
+      },
+      width: '500px',
+    });
   }
 }
