@@ -8,11 +8,10 @@ import { IngredientRequirement } from '../../models/ingredient-requirement';
 })
 export class ListIngredientRequirementsComponent implements OnInit {
   @Input() requirements!: IngredientRequirement[];
+  @Input() servings!: number;
   displayedColumns = ['name', 'amount'];
-  portions: number = 4;
 
   constructor() {}
 
   ngOnInit(): void {}
-
 }

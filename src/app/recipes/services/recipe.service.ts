@@ -20,6 +20,7 @@ import { IngredientRequirement } from '../models/ingredient-requirement';
 export class RecipeService {
   static readonly collection = 'recipes';
   private recipes$!: BehaviorSubject<Recipe[]>;
+  private recipeMap: Record<string, Recipe | undefined> = {};
 
   constructor(
     private api: ApiService,
@@ -27,7 +28,11 @@ export class RecipeService {
     private ingredientsService: IngredientService,
   ) {}
 
-  static deserializeRecipes([recipes, ingredients]: [any, Ingredient[]]): Recipe[] {
+  deleteRecipe(id: string): Promise<void> {
+    return this.api.deleteDocumentFromCollection(id, RecipeService.collection);
+  }
+
+  deserializeRecipes([recipes, ingredients]: [any, Ingredient[]]): Recipe[] {
     return recipes.reduce((all: any, recipeData: any) => {
       const recipeIngredients = Object.entries(recipeData.ingredients).reduce((allI: any, [id, amount]: any) => {
         const ingredient = ingredients.find((ing) => ing.id === id);
@@ -41,14 +46,16 @@ export class RecipeService {
         return allI;
       }, []);
 
-      all.push({
+      const recipe = {
         author: recipeData.author ?? '',
+        children: [],
         created: recipeData.created ?? '',
         edited: recipeData.edited ?? '',
         editedBy: recipeData.editedBy ?? '',
         id: recipeData.id,
         instructions: recipeData.instructions ?? '',
         name: recipeData.name || 'Missing name',
+        parent: recipeData.parent,
         requirements: recipeIngredients.sort((
           a: IngredientRequirement,
           b: IngredientRequirement
@@ -58,7 +65,9 @@ export class RecipeService {
           hours: Math.floor(recipeData.time),
           minutes: Math.floor(recipeData.time % 1 * 60),
         },
-      });
+      };
+      this.recipeMap[recipe.id] = recipe;
+      all.push(recipe);
       return all;
     }, []);
   }
@@ -76,13 +85,23 @@ export class RecipeService {
         this.api.getDataFromCollection(RecipeService.collection),
         this.ingredientsService.getIngredients()
       ]).pipe(
-        map(RecipeService.deserializeRecipes)
+        map(this.deserializeRecipes.bind(this)),
+        map(this.resolveRecipeChildren.bind(this)),
       ).subscribe((recipes: Recipe[]) => {
         this.recipes$.next(recipes);
-      })
+      });
     }
 
     return this.recipes$.asObservable();
+  }
+
+  resolveRecipeChildren(recipes: Recipe[]): Recipe[] {
+    recipes.forEach((recipe) => {
+      if (recipe.parent) {
+        this.recipeMap[recipe.parent]?.children.push(recipe);
+      }
+    });
+    return recipes;
   }
 
   serializeRecipe(recipe: Omit<Recipe, 'id'>, recipeId?: string): RecipeDbo {
@@ -128,6 +147,9 @@ export class RecipeService {
     if (!recipeId) {
       recipeDBO.author = recipe.author;
       recipeDBO.created = recipe.created;
+    }
+    if (recipe.parent) {
+      recipeDBO.parent = recipe.parent;
     }
 
     return recipeDBO;

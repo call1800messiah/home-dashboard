@@ -6,6 +6,7 @@ import { Subscription, switchMap } from 'rxjs';
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../../models/recipe';
 import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -16,13 +17,16 @@ import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   recipe!: Recipe;
+  servings: number;
   private recipeSub!: Subscription;
 
   constructor(
     private dialog: MatDialog,
     private recipeService: RecipeService,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+    this.servings = 4;
+  }
 
   ngOnInit(): void {
     this.recipeSub = this.route.paramMap.pipe(
@@ -41,14 +45,40 @@ export class RecipeComponent implements OnInit, OnDestroy {
   }
 
 
-
-  editRecipe(): void {
+  addChildRecipe() {
     this.dialog.open(EditRecipeComponent, {
       data: {
-        recipe: this.recipe,
+        parent: this.recipe.id,
       },
       maxHeight: '90vh',
       width: '750px',
     });
+  }
+
+  deleteRecipe(recipe: Recipe): void {
+    this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      maxWidth: '90vw',
+      data: {
+        question: `Willst du das Rezept ${recipe.name} wirklich löschen?`,
+        onConfirm: () => {
+          this.recipeService.deleteRecipe(recipe.id);
+        }
+      }
+    });
+  }
+
+  editRecipe(recipe: Recipe): void {
+    this.dialog.open(EditRecipeComponent, {
+      data: {
+        recipe,
+      },
+      maxHeight: '90vh',
+      width: '750px',
+    });
+  }
+
+  onServingsChanged(amount: number) {
+    this.servings = amount;
   }
 }

@@ -10,6 +10,7 @@ export interface RecipeDbo {
   ingredientUnits: Record<string, string | FieldValue>;
   instructions: string;
   name: string;
+  parent?: string;
   summary: string;
   time: number;
 }
