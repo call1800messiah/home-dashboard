@@ -9,6 +9,7 @@ import { ListIngredientRequirementsComponent } from './components/list-ingredien
 import { EditRecipeComponent } from './components/edit-recipe/edit-recipe.component';
 import { ListIngredientsComponent } from './components/list-ingredients/list-ingredients.component';
 import { EditIngredientComponent } from './components/edit-ingredient/edit-ingredient.component';
+import { ServingCountComponent } from './components/serving-count/serving-count.component';
 
 
 
@@ -21,6 +22,7 @@ import { EditIngredientComponent } from './components/edit-ingredient/edit-ingre
     EditRecipeComponent,
     ListIngredientsComponent,
     EditIngredientComponent,
+    ServingCountComponent,
   ],
   imports: [
     SharedModule,

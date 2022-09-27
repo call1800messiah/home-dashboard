@@ -1,0 +1,6 @@
+<div class="portions">
+  <mat-form-field appearance="fill">
+    <input matInput [ngModel]="servings" type="number" step="1" min="1" (ngModelChange)="onServingsChanged($event)" />
+    <mat-label>Portionen</mat-label>
+  </mat-form-field>
+</div>

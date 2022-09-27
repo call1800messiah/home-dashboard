@@ -1,9 +1,9 @@
 <div class="recipe container medium" *ngIf="recipe">
   <h1>{{recipe.name}}</h1>
-  <button mat-fab type="button" color="accent" class="button-container-top" (click)="editRecipe()">
+  <button mat-fab type="button" color="accent" class="button-container-top" (click)="editRecipe(recipe)">
     <mat-icon>edit</mat-icon>
   </button>
-  <mat-card *ngIf="recipe">
+  <mat-card *ngIf="recipe" class="card">
     <mat-card-content>
       <div class="time">
         <app-recipe-time [time]="recipe.time"></app-recipe-time>
@@ -13,13 +13,51 @@
         {{recipe.summary}}
       </div>
 
-      <h2>Zutaten</h2>
-      <app-list-ingredient-requirements [requirements]="recipe.requirements"></app-list-ingredient-requirements>
+      <app-serving-count [servings]="servings" (servingsChanged)="onServingsChanged($event)"></app-serving-count>
 
-      <div class="instructions">
+      <div class="ingredient-requirements" *ngIf="recipe.requirements.length > 0">
+        <h2>Zutaten</h2>
+        <app-list-ingredient-requirements [requirements]="recipe.requirements" [servings]="servings"></app-list-ingredient-requirements>
+      </div>
+
+      <div class="instructions" *ngIf="recipe.instructions">
         <h2>Zubereitung</h2>
         {{recipe.instructions}}
       </div>
     </mat-card-content>
   </mat-card>
+
+  <div class="children" *ngIf="recipe.children.length > 0">
+    <mat-card class="card recipe-child" *ngFor="let child of recipe.children">
+      <mat-card-content>
+        <h2 class="title">{{child.name}}</h2>
+        <div class="time">
+          <app-recipe-time [time]="child.time"></app-recipe-time>
+        </div>
+
+        <div class="summary" *ngIf="child.summary">
+          {{child.summary}}
+        </div>
+
+        <div class="ingredient-requirements" *ngIf="child.requirements.length > 0">
+          <h3>Zutaten</h3>
+          <app-list-ingredient-requirements [requirements]="child.requirements" [servings]="servings"></app-list-ingredient-requirements>
+        </div>
+
+        <div class="instructions" *ngIf="child.instructions">
+          <h3>Zubereitung</h3>
+          {{child.instructions}}
+        </div>
+
+        <button type="button" mat-mini-fab color="accent" class="btn-edit-child" (click)="editRecipe(child)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button type="button" mat-mini-fab color="warn" class="btn-delete-child" (click)="deleteRecipe(child)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <button mat-raised-button type="button" color="accent" (click)="addChildRecipe()">Teilrezept hinzufügen</button>
 </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../../models/recipe';
@@ -22,7 +23,9 @@ export class ListRecipesComponent implements OnInit {
     private recipeService: RecipeService,
     private router: Router,
   ) {
-    this.recipes$ = this.recipeService.getRecipes();
+    this.recipes$ = this.recipeService.getRecipes().pipe(
+      map((recipes) => recipes.filter((recipe) => !recipe.parent)),
+    );
   }
 
   ngOnInit(): void {
@@ -31,7 +34,8 @@ export class ListRecipesComponent implements OnInit {
 
   addRecipe(): void {
     this.dialog.open(EditRecipeComponent, {
-      width: '750px'
+      maxHeight: '90vh',
+      width: '750px',
     });
   }
 
