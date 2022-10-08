@@ -164,7 +164,7 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
     if (this.data?.parent) {
       // If this is a new child recipe
       recipe.parent = this.data.parent;
-    } else if (this.data.recipe?.parent) {
+    } else if (this.data?.recipe?.parent) {
       // If we are editing an existing child recipe
       recipe.parent = this.data.recipe.parent;
     }
