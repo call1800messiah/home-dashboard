@@ -58,7 +58,7 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
       this.requirements = [...recipe.requirements];
       this.recipeForm.patchValue({
         ...recipe,
-        time: `${recipe.time.hours || '00'}:${recipe.time.minutes || '00'}`,
+        time: `${this.zeroPad(recipe.time.hours) || '00'}:${this.zeroPad(recipe.time.minutes) || '00'}`,
       });
       this.requirements.forEach((requirement) => {
         this.recipeForm.addControl(`ing-${requirement.ingredient.id}-amo`, new FormControl(requirement.amount));
@@ -183,5 +183,9 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
     const filterValue = value.toLowerCase();
 
     return list.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
+  private zeroPad(num: number): string {
+    return num < 10 ? `0${num}` : `${num}`
   }
 }
