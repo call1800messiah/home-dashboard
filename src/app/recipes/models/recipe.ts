@@ -8,10 +8,10 @@ export interface Recipe {
   edited: Date;
   editedBy: string;
   id: string;
-  instructions: string;
+  instructions?: string;
   parent?: string;
   name: string;
   requirements: IngredientRequirement[];
-  summary: string;
+  summary?: string;
   time: Time;
 }

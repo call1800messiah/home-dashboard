@@ -139,9 +139,9 @@ export class RecipeService {
       editedBy: recipe.editedBy,
       ingredients,
       ingredientUnits,
-      instructions: recipe.instructions,
+      instructions: recipe.instructions || '',
       name: recipe.name,
-      summary: recipe.summary,
+      summary: recipe.summary || '',
       time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60)
     };
     if (!recipeId) {
