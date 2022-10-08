@@ -19,8 +19,7 @@
       <div class="ingredients" *ngIf="recipe.requirements.length > 0">
         Zutaten:
         <span *ngFor="let requirement of recipe.requirements" class="ingredient">
-          {{requirement.ingredient.name}}
-        </span>
+          {{requirement.ingredient.name}}</span>
       </div>
     </mat-card-footer>
   </mat-card>

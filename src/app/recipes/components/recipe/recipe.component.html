@@ -9,7 +9,7 @@
         <app-recipe-time [time]="recipe.time"></app-recipe-time>
       </div>
 
-      <div class="summary">
+      <div class="summary" *ngIf="recipe.summary">
         {{recipe.summary}}
       </div>
 
