@@ -14,7 +14,9 @@ export class RecipeTimeComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-    this.displayTime = `${this.time.hours !== 0 ? this.time.hours : ''}${(this.time.hours && this.time.minutes) ? ':' : ''}${this.time.minutes !== 0 ? this.time.minutes : ''}`;
+  ngOnInit(): void {}
+
+  getDisplayTime() {
+    return `${this.time.hours !== 0 ? this.time.hours : ''}${(this.time.hours && this.time.minutes) ? ':' : ''}${this.time.minutes !== 0 ? this.time.minutes : ''}`;
   }
 }
