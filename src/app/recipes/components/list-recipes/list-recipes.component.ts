@@ -34,6 +34,7 @@ export class ListRecipesComponent implements OnInit {
 
   addRecipe(): void {
     this.dialog.open(EditRecipeComponent, {
+      disableClose: true,
       maxHeight: '90vh',
       width: '750px',
     });

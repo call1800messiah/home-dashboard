@@ -91,6 +91,7 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
         data: {
           newName: ingredient,
         },
+        disableClose: true,
         maxHeight: '90vh',
         width: '500px',
       });
