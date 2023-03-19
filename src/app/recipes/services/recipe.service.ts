@@ -8,7 +8,7 @@ import { Recipe } from '../models/recipe';
 import { ApiService } from '../../core/services/api.service';
 import { Ingredient } from '../models/ingredient';
 import { IngredientService } from './ingredient.service';
-import { RecipeDbo } from '../models/recipe-dbo';
+import { RecipeDbo } from '../models/recipe.dbo';
 import { DataService } from '../../core/services/data.service';
 import { IngredientRequirement } from '../models/ingredient-requirement';
 
