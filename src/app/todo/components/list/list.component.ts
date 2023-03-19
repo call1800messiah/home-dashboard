@@ -6,6 +6,7 @@ import { Subscription, switchMap } from 'rxjs';
 import { TodoList } from '../../models/todo-list';
 import { TodoService } from '../../services/todo.service';
 import { EditTodoListComponent } from '../edit-todo-list/edit-todo-list.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 
@@ -16,28 +17,44 @@ import { EditTodoListComponent } from '../edit-todo-list/edit-todo-list.componen
 })
 export class ListComponent implements OnInit, OnDestroy {
   list!: TodoList;
-  private listSub!: Subscription;
+  userID!: string;
+  private subscription = new Subscription();
 
   constructor(
+    private auth: AuthService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private todoService: TodoService,
-  ) { }
+  ) {
+    this.subscription.add(
+      this.auth.user$.subscribe((user) => {
+        if (user) {
+          this.userID = user.id;
+        }
+      })
+    );
+  }
 
   ngOnInit(): void {
-    this.listSub = this.route.paramMap.pipe(
-      switchMap(params => {
-        return this.todoService.getListById(params.get('id') ?? '');
-      }),
-    ).subscribe((list) => {
-      if (list) {
-        this.list = list;
-      }
-    });
+    this.subscription.add(
+      this.route.paramMap.pipe(
+        switchMap(params => {
+          return this.todoService.getListById(params.get('id') ?? '');
+        }),
+      ).subscribe((list) => {
+        if (list) {
+          this.list = list;
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
-    this.listSub.unsubscribe();
+    this.subscription.unsubscribe();
+  }
+
+  addTodoItem() {
+
   }
 
   editList() {

@@ -1,9 +1,20 @@
-<div class="todo-item" *ngIf="item">
-  <input type="checkbox" [ngModel]="item.done" ] (change)="toggleDone()" />
+<div class="todo-item" *ngIf="item" [ngClass]="{'done': item.done}">
+  <div class="done-check">
+    <mat-checkbox [ngModel]="item.done" (change)="toggleDone()"></mat-checkbox>
+  </div>
   <div class="content" (click)="toggleEdit()" *ngIf="!editing">
     {{item.content}}
   </div>
-  <div class="editing-content" *ngIf="editing">
-    <input type="text" class="editing-content" [ngModel]="item.content" />
-  </div>
+  <mat-form-field appearance="fill" class="editing-content" *ngIf="editing">
+    <input matInput type="text" class="editing-content" [(ngModel)]="editContent" />
+    <div matSuffix>
+      <button mat-icon-button (click)="confirmEdit()">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button (click)="cancelEdit()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </mat-form-field>
 </div>
+<app-add-todo-item (addTodoItem)="addTodo.emit()"></app-add-todo-item>

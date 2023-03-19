@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TodoItem } from '../../models/todo-item';
 import { TodoService } from '../../services/todo.service';
 
@@ -9,7 +9,10 @@ import { TodoService } from '../../services/todo.service';
 })
 export class TodoItemComponent implements OnInit {
   @Input() item!: TodoItem;
+  @Input() userID!: string;
+  @Output() addTodo = new EventEmitter();
   editing: boolean = false;
+  editContent: string = '';
 
   constructor(
     private todoService: TodoService,
@@ -18,16 +21,44 @@ export class TodoItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  toggleDone() {
-    const done = !this.item.done;
-    this.todoService.storeTodoItem({
+  cancelEdit() {
+    this.editContent = '';
+    this.editing = false;
+  }
+
+  confirmEdit() {
+    const editedItem: Omit<TodoItem, 'id'> = {
       ...this.item,
-      done,
-      markedDone: done ? new Date() : undefined,
+      content: this.editContent,
+      edited: new Date(),
+      editedBy: this.userID,
+    };
+    // @ts-ignore
+    delete editedItem.id;
+    this.todoService.storeTodoItem(editedItem, this.item.id).then(() => {
+      this.editing = false;
     });
   }
 
+  toggleDone() {
+    const done = !this.item.done;
+    const doneItem: Omit<TodoItem, 'id'> = {
+      ...this.item,
+      done,
+      doneBy: this.userID,
+      markedDone: done ? new Date() : undefined,
+    };
+    // @ts-ignore
+    delete doneItem.id;
+    if (!done) {
+      delete doneItem.doneBy;
+      delete doneItem.markedDone;
+    }
+    this.todoService.storeTodoItem(doneItem, this.item.id).then();
+  }
+
   toggleEdit() {
+    this.editContent = this.item.content;
     this.editing = !this.editing;
   }
 }

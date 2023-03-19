@@ -5,7 +5,8 @@
   </button>
   <mat-card>
     <mat-card-content>
-      <app-todo-item *ngFor="let item of list.items" [item]="item"></app-todo-item>
+      <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
+      <app-todo-item *ngFor="let item of list.items" [item]="item" [userID]="userID" (addTodo)="addTodoItem()"></app-todo-item>
     </mat-card-content>
   </mat-card>
 </div>

@@ -4,7 +4,10 @@
     <mat-icon>add</mat-icon>
   </button>
 
-  <mat-card *ngFor="let list of lists$ | async" (click)="goToList(list.id)" mat-ripple class="list">
-    <mat-card-title>{{list.name}}</mat-card-title>
+  <mat-card *ngFor="let list of lists$ | async" mat-ripple class="list">
+    <mat-card-title (click)="goToList(list.id)">{{list.name}}</mat-card-title>
+    <button class="button-delete" mat-mini-fab type="button" color="warn" (click)="deleteTodoList(list.id, list.name)">
+      <mat-icon>delete</mat-icon>
+    </button>
   </mat-card>
 </div>

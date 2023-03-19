@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
+import firebase from 'firebase/compat/app';
+import FieldValue = firebase.firestore.FieldValue;
 
 import { TodoList } from '../models/todo-list';
 import { ApiService } from '../../core/services/api.service';
 import { DataService } from '../../core/services/data.service';
 import { TodoItem } from '../models/todo-item';
+import { TodoItemDbo } from '../models/todo-item.dbo';
+import { UtilService } from '../../core/services/util.service';
 
 
 
@@ -13,13 +17,19 @@ import { TodoItem } from '../models/todo-item';
   providedIn: 'root'
 })
 export class TodoService {
-  static readonly collection = 'todo';
-  private todoLists$!: BehaviorSubject<TodoList[]>
+  static readonly collectionItems = 'todoItems';
+  static readonly collectionLists = 'todo';
+  private todoItems$!: BehaviorSubject<TodoItem[]>;
+  private todoLists$!: BehaviorSubject<TodoList[]>;
 
   constructor(
     private api: ApiService,
     private data: DataService,
   ) { }
+
+  deleteTodoList(id: string): Promise<void> {
+    return this.api.deleteDocumentFromCollection(id, TodoService.collectionLists);
+  }
 
   getListById(id: string): Observable<TodoList|undefined> {
     return this.getTodoLists().pipe(
@@ -30,29 +40,81 @@ export class TodoService {
   getTodoLists(): Observable<TodoList[]> {
     if (!this.todoLists$) {
       this.todoLists$ = new BehaviorSubject<TodoList[]>([]);
-      this.api.getDataFromCollection(TodoService.collection).pipe(
-        map(TodoService.deserializeTodoLists)
+      combineLatest([
+        this.api.getDataFromCollection(TodoService.collectionLists),
+        this.getTodoItems(),
+      ]).pipe(
+        map(TodoService.deserializeTodoLists),
+        map((lists) => lists.sort(UtilService.orderByName)),
       ).subscribe((lists: TodoList[]) => {
         this.todoLists$.next(lists);
-      })
+      });
     }
 
     return this.todoLists$.asObservable();
   }
 
   storeTodoItem(item: Omit<TodoItem, 'id'>, id?: string): Promise<boolean> {
-    // TODO: Decide how to store todo items
-    return new Promise<boolean>((resolve) => resolve(true));
+    return this.data.store(this.serializeTodoItem(item, id), TodoService.collectionItems, id);
   }
 
   storeTodoList(list: Omit<TodoList, 'id'>, id?: string): Promise<boolean> {
-    return this.data.store(TodoService.serializeTodoList(list), TodoService.collection, id);
+    return this.data.store(TodoService.serializeTodoList(list), TodoService.collectionLists, id);
   }
 
-  private static deserializeTodoLists(lists: any): TodoList[] {
+  private getTodoItems(): Observable<TodoItem[]> {
+    if (!this.todoItems$) {
+      this.todoItems$ = new BehaviorSubject<TodoItem[]>([]);
+      this.api.getDataFromCollection(TodoService.collectionItems).pipe(
+        map(TodoService.deserializeTodoItems),
+      ).subscribe((items: TodoItem[]) => {
+        this.todoItems$.next(items);
+      });
+    }
+
+    return this.todoItems$;
+  }
+
+  private serializeTodoItem(item: Omit<TodoItem, 'id'>, todoID?: string): TodoItemDbo {
+    if (todoID) {
+      const updateItem: TodoItemDbo = {...item};
+      this.todoItems$.pipe(
+        take(1),
+        map((items) => items.find((item) => item.id === todoID)),
+      ).subscribe((currentItem) => {
+        if (currentItem) {
+          console.log(currentItem, updateItem);
+          if (updateItem.markedDone === undefined && currentItem.markedDone !== undefined) {
+            updateItem.markedDone = FieldValue.delete();
+          }
+          if (updateItem.doneBy === undefined && currentItem.doneBy !== undefined) {
+            updateItem.doneBy = FieldValue.delete();
+          }
+        }
+      });
+      return updateItem;
+    }
+
+    return item;
+  }
+
+  private static deserializeTodoItems(items: any): TodoItem[] {
+    return items.reduce((all: any, item: any) => {
+      const todoItem: TodoItem = {
+        ...item
+      };
+      all.push(todoItem);
+      return all;
+    }, []);
+  }
+
+  private static deserializeTodoLists([lists, items]: [any, any]): TodoList[] {
     return lists.reduce((all: any, list: any) => {
       const todoList: TodoList = {
-        ...list
+        ...list,
+        items: list.items?.map(
+          (itemId: string) => items.find((item: TodoItem) => item.id === itemId)
+        ) || [],
       };
       all.push(todoList);
       return all;

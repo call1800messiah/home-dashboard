@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { TodoList } from '../../models/todo-list';
 import { TodoService } from '../../services/todo.service';
 import { EditTodoListComponent } from '../edit-todo-list/edit-todo-list.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -31,6 +32,15 @@ export class ListsComponent implements OnInit {
   addList(): void {
     this.dialog.open(EditTodoListComponent, {
       width: '500px',
+    });
+  }
+
+  deleteTodoList(id: string, name: string): void {
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        onConfirm: () => this.todoService.deleteTodoList(id),
+        question: `Willst du wirklich die Liste ${name} löschen?`,
+      },
     });
   }
 

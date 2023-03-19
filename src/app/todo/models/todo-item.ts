@@ -5,5 +5,8 @@ export interface TodoItem {
   content: string;
   created: Date;
   done: boolean;
+  doneBy?: string;
+  edited: Date;
+  editedBy: string;
   markedDone?: Date;
 }

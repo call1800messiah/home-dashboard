@@ -6,6 +6,7 @@ import { TodoItemComponent } from './components/todo-item/todo-item.component';
 import { SharedModule } from '../shared/shared.module';
 import { EditTodoListComponent } from './components/edit-todo-list/edit-todo-list.component';
 import { TodoRoutingModule } from './todo-routing.module';
+import { AddTodoItemComponent } from './components/add-todo-item/add-todo-item.component';
 
 
 
@@ -14,7 +15,8 @@ import { TodoRoutingModule } from './todo-routing.module';
     ListsComponent,
     ListComponent,
     TodoItemComponent,
-    EditTodoListComponent
+    EditTodoListComponent,
+    AddTodoItemComponent
   ],
   imports: [
     CommonModule,
