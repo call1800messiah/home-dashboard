@@ -14,4 +14,5 @@ export interface Recipe {
   requirements: IngredientRequirement[];
   summary?: string;
   time: Time;
+  type?: string;
 }

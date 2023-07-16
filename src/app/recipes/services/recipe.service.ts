@@ -19,6 +19,17 @@ import { IngredientRequirement } from '../models/ingredient-requirement';
 })
 export class RecipeService {
   static readonly collection = 'recipes';
+  static readonly recipeTypes: Record<string, string> = {
+    baked: 'Backware',
+    cake: 'Kuchen',
+    dessert: 'Dessert',
+    drink: 'Getränk',
+    entree: 'Vorspeise',
+    main: 'Hauptgericht',
+    other: 'Sonstiges',
+    side: 'Beilage',
+    snack: 'Snack',
+  };
   private recipes$!: BehaviorSubject<Recipe[]>;
   private recipeMap: Record<string, Recipe | undefined> = {};
 
@@ -65,6 +76,7 @@ export class RecipeService {
           hours: Math.floor(recipeData.time),
           minutes: Math.floor(recipeData.time % 1 * 60),
         },
+        type: recipeData.type,
       };
       this.recipeMap[recipe.id] = recipe;
       all.push(recipe);
@@ -142,7 +154,8 @@ export class RecipeService {
       instructions: recipe.instructions || '',
       name: recipe.name,
       summary: recipe.summary || '',
-      time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60)
+      time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60),
+      type: recipe.type ?? FieldValue.delete(),
     };
     if (!recipeId) {
       recipeDBO.author = recipe.author;

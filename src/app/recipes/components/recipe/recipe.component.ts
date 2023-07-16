@@ -17,6 +17,7 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   recipe!: Recipe;
+  recipeTypes = RecipeService.recipeTypes;
   servings: number;
   private recipeSub!: Subscription;
 
@@ -50,6 +51,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       data: {
         parent: this.recipe.id,
       },
+      disableClose: true,
       maxHeight: '90vh',
       width: '750px',
     });
@@ -57,14 +59,15 @@ export class RecipeComponent implements OnInit, OnDestroy {
 
   deleteRecipe(recipe: Recipe): void {
     this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      maxWidth: '90vw',
       data: {
         question: `Willst du das Rezept ${recipe.name} wirklich löschen?`,
         onConfirm: () => {
           this.recipeService.deleteRecipe(recipe.id);
         }
-      }
+      },
+      disableClose: true,
+      maxWidth: '90vw',
+      width: '400px',
     });
   }
 
@@ -73,6 +76,7 @@ export class RecipeComponent implements OnInit, OnDestroy {
       data: {
         recipe,
       },
+      disableClose: true,
       maxHeight: '90vh',
       width: '750px',
     });

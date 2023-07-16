@@ -1,3 +1,14 @@
 .sidebar {
   width: 200px;
+
+  nav {
+    a {
+      text-align: left;
+      width: 100%;
+    }
+
+    ul ul {
+      padding-left: 10px;
+    }
+  }
 }

@@ -13,12 +13,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { FilterComponent } from './components/filter/filter.component';
+import { MatChip, MatChipsModule } from '@angular/material/chips';
 
 
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    FilterComponent
   ],
   imports: [
     CommonModule,
@@ -27,6 +30,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
+    MatChipsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
@@ -39,11 +43,13 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
   exports: [
     ConfirmDialogComponent,
     CommonModule,
+    FilterComponent,
     FormsModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
+    MatChipsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { Ingredient } from '../../models/ingredient';
 import { IngredientService } from '../../services/ingredient.service';
 import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.component';
@@ -11,6 +13,7 @@ import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.comp
   styleUrls: ['./list-ingredients.component.scss']
 })
 export class ListIngredientsComponent implements OnInit {
+  filterText: BehaviorSubject<string>;
   ingredients$: Observable<Ingredient[]>;
   ingredientTypes = IngredientService.ingredientTypes;
 
@@ -18,7 +21,13 @@ export class ListIngredientsComponent implements OnInit {
     private dialog: MatDialog,
     private ingredientService: IngredientService,
   ) {
-    this.ingredients$ = this.ingredientService.getIngredients();
+    this.filterText = new BehaviorSubject<string>('');
+    this.ingredients$ = combineLatest([
+      this.ingredientService.getIngredients(),
+      this.filterText,
+    ]).pipe(
+      map(this.filterIngredientsByText),
+    );
   }
 
   ngOnInit(): void {
@@ -26,6 +35,7 @@ export class ListIngredientsComponent implements OnInit {
 
   addIngredient(): void {
     this.dialog.open(EditIngredientComponent, {
+      disableClose: true,
       maxHeight: '90vh',
       width: '500px',
     });
@@ -36,8 +46,22 @@ export class ListIngredientsComponent implements OnInit {
       data: {
         ingredient
       },
+      disableClose: true,
       maxHeight: '90vh',
       width: '500px',
+    });
+  }
+
+
+  onFilterChanged(text: string) {
+    this.filterText.next(text);
+  }
+
+
+  private filterIngredientsByText([ingredients, text]: [Ingredient[], string]): Ingredient[] {
+    return ingredients.filter((ingredient) => {
+      return ingredient.name.toLowerCase().includes(text.toLowerCase())
+        || IngredientService.ingredientTypes[ingredient.type].toLowerCase().includes(text.toLowerCase());
     });
   }
 }

@@ -13,4 +13,5 @@ export interface RecipeDbo {
   parent?: string;
   summary: string;
   time: number;
+  type?: string | FieldValue;
 }
