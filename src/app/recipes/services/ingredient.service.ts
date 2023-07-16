@@ -19,6 +19,7 @@ export class IngredientService {
     fish: 'Fisch',
     fluid: 'Flüssigkeit',
     fruit: 'Obst',
+    fungus: 'Pilz',
     grain: 'Getreide',
     meat: 'Fleisch',
     spice: 'Gewürz',

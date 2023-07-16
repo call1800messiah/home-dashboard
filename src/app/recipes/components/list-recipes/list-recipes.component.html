@@ -1,9 +1,14 @@
 <div class="container medium">
   <h1>Rezepte</h1>
-  <button mat-raised-button color="accent" routerLink="ingredients">Zutaten</button>
   <button mat-fab type="button" color="primary" class="button-container-top" (click)="addRecipe()">
     <mat-icon>add</mat-icon>
   </button>
+
+  <app-filter
+    class="stacked-form"
+    placeholder="Rezeptname, Zutat, Art, Beschreibung ..."
+    (filterChanged)="onFilterChanged($event)"
+  ></app-filter>
 
   <mat-card *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
     <mat-card-title class="title">{{recipe.name}}</mat-card-title>
@@ -20,6 +25,10 @@
         Zutaten:
         <span *ngFor="let requirement of recipe.requirements" class="ingredient">
           {{requirement.ingredient.name}}</span>
+      </div>
+
+      <div class="type mat-accent" *ngIf="recipe.type">
+        {{recipeTypes[recipe.type]}}
       </div>
     </mat-card-footer>
   </mat-card>

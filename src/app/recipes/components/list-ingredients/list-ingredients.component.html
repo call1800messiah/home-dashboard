@@ -3,6 +3,13 @@
   <button class="button-container-top" color="primary" mat-fab type="button" (click)="addIngredient()">
     <mat-icon>add</mat-icon>
   </button>
+
+  <app-filter
+    class="stacked-form"
+    placeholder="Name, Typ ..."
+    (filterChanged)="onFilterChanged($event)"
+  ></app-filter>
+
   <mat-card
     class="ingredient"
     *ngFor="let ingredient of ingredients$ | async"
