@@ -9,6 +9,15 @@
       <mat-label>Zubereitungszeit</mat-label>
     </mat-form-field>
     <mat-form-field appearance="fill">
+      <mat-select id="type" formControlName="type" required>
+        <mat-option></mat-option>
+        <mat-option [value]="type['key']" *ngFor="let type of recipeTypes;">
+          {{type['value']}}
+        </mat-option>
+      </mat-select>
+      <mat-label>Typ</mat-label>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
       <textarea
         matInput
         id="summary"

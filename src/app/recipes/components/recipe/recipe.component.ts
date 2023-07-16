@@ -17,6 +17,7 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   recipe!: Recipe;
+  recipeTypes = RecipeService.recipeTypes;
   servings: number;
   private recipeSub!: Subscription;
 

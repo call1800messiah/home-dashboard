@@ -1,11 +1,16 @@
 @import '../../../../scss/variables.scss';
-
 .recipe {
+  --recipe-type-width: 120px;
   cursor: pointer;
   margin-top: 16px;
 
   mat-card-content {
     font-size: 16px;
+  }
+
+  mat-card-footer {
+    padding-right: var(--recipe-type-width);
+    position: relative;
   }
 }
 
@@ -34,4 +39,15 @@
   &:last-child:after {
     content: none;
   }
+}
+
+.type {
+  background-color: gray;
+  bottom: 0;
+  font-size: 14px;
+  padding: 5px 16px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  width: var(--recipe-type-width);
 }

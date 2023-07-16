@@ -30,6 +30,10 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
     name: new FormControl(''),
     summary: new FormControl(''),
     time: new FormControl('00:00'),
+    type: new FormControl(''),
+  });
+  recipeTypes: Record<string, string>[] = Object.entries(RecipeService.recipeTypes).map(([key, value]) => {
+    return { key, value };
   });
   ingredients$!: Observable<Ingredient[]>;
   private userID!: string;

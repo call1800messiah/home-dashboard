@@ -17,6 +17,7 @@ import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
 })
 export class ListRecipesComponent implements OnInit {
   filterText: BehaviorSubject<string>;
+  recipeTypes = RecipeService.recipeTypes;
   recipes$: Observable<Recipe[]>;
 
   constructor(
@@ -62,6 +63,7 @@ export class ListRecipesComponent implements OnInit {
     return recipes.filter((recipe) => {
       return recipe.name.toLowerCase().includes(text.toLowerCase())
         || recipe.summary?.toLowerCase().includes(text.toLowerCase())
+        || recipe.type && RecipeService.recipeTypes[recipe.type].toLowerCase().includes(text.toLowerCase())
         || recipe.requirements.find((requirement) => requirement.ingredient.name.toLowerCase().includes(text.toLowerCase()));
     });
   }

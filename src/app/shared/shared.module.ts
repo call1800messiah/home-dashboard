@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { FilterComponent } from './components/filter/filter.component';
+import { MatChip, MatChipsModule } from '@angular/material/chips';
 
 
 
@@ -27,6 +28,7 @@ import { FilterComponent } from './components/filter/filter.component';
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatChipsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
@@ -44,6 +46,7 @@ import { FilterComponent } from './components/filter/filter.component';
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatChipsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,

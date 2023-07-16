@@ -6,7 +6,7 @@
 
   <app-filter
     class="stacked-form"
-    placeholder="Rezeptname, Zutat, Beschreibung ..."
+    placeholder="Rezeptname, Zutat, Art, Beschreibung ..."
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>
 
@@ -25,6 +25,10 @@
         Zutaten:
         <span *ngFor="let requirement of recipe.requirements" class="ingredient">
           {{requirement.ingredient.name}}</span>
+      </div>
+
+      <div class="type mat-accent" *ngIf="recipe.type">
+        {{recipeTypes[recipe.type]}}
       </div>
     </mat-card-footer>
   </mat-card>
