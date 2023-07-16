@@ -12,12 +12,14 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { FilterComponent } from './components/filter/filter.component';
 
 
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    FilterComponent
   ],
   imports: [
     CommonModule,
@@ -37,6 +39,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
   exports: [
     ConfirmDialogComponent,
     CommonModule,
+    FilterComponent,
     FormsModule,
     MatAutocompleteModule,
     MatButtonModule,

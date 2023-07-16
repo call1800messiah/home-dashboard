@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { RecipeService } from '../../services/recipe.service';
@@ -16,6 +16,7 @@ import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
   styleUrls: ['./list-recipes.component.scss']
 })
 export class ListRecipesComponent implements OnInit {
+  filterText: BehaviorSubject<string>;
   recipes$: Observable<Recipe[]>;
 
   constructor(
@@ -23,9 +24,15 @@ export class ListRecipesComponent implements OnInit {
     private recipeService: RecipeService,
     private router: Router,
   ) {
-    this.recipes$ = this.recipeService.getRecipes().pipe(
-      map((recipes) => recipes.filter((recipe) => !recipe.parent)),
-    );
+    this.filterText = new BehaviorSubject<string>('');
+    this.recipes$ = combineLatest([
+      this.recipeService.getRecipes().pipe(
+        map((recipes) => recipes.filter((recipe) => !recipe.parent)),
+      ),
+      this.filterText,
+    ]).pipe(
+      map(this.filterRecipesByText),
+    )
   }
 
   ngOnInit(): void {
@@ -43,5 +50,20 @@ export class ListRecipesComponent implements OnInit {
 
   goToRecipe(id: string) {
     this.router.navigate([`recipes/recipe/${id}`]);
+  }
+
+
+  onFilterChanged(text: string) {
+    this.filterText.next(text);
+  }
+
+
+  private filterRecipesByText(data: [Recipe[], string]): Recipe[] {
+    const [recipes, text] = data;
+    return recipes.filter((recipe) => {
+      return recipe.name.toLowerCase().includes(text.toLowerCase())
+        || recipe.summary?.toLowerCase().includes(text.toLowerCase())
+        || recipe.requirements.find((requirement) => requirement.ingredient.name.toLowerCase().includes(text.toLowerCase()));
+    });
   }
 }

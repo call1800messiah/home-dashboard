@@ -5,6 +5,14 @@
     <mat-icon>add</mat-icon>
   </button>
 
+  <div class="filter">
+    <app-filter
+      class="stacked-form"
+      placeholder="Rezeptname, Zutat, Beschreibung..."
+      (filterChanged)="onFilterChanged($event)"
+    ></app-filter>
+  </div>
+
   <mat-card *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
     <mat-card-title class="title">{{recipe.name}}</mat-card-title>
 
