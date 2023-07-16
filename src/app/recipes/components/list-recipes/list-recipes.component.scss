@@ -1,14 +1,5 @@
 @import '../../../../scss/variables.scss';
 
-.filter {
-  display: flex;
-  justify-content: stretch;
-
-  app-filter {
-    flex: 1;
-  }
-}
-
 .recipe {
   cursor: pointer;
   margin-top: 16px;

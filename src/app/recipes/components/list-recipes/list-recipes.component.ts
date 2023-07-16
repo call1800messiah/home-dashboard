@@ -58,8 +58,7 @@ export class ListRecipesComponent implements OnInit {
   }
 
 
-  private filterRecipesByText(data: [Recipe[], string]): Recipe[] {
-    const [recipes, text] = data;
+  private filterRecipesByText([recipes, text]: [Recipe[], string]): Recipe[] {
     return recipes.filter((recipe) => {
       return recipe.name.toLowerCase().includes(text.toLowerCase())
         || recipe.summary?.toLowerCase().includes(text.toLowerCase())
