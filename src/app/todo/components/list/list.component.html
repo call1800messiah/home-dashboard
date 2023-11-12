@@ -6,7 +6,21 @@
   <mat-card>
     <mat-card-content>
       <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
-      <app-todo-item *ngFor="let item of list.items" [item]="item" [userID]="userID" (addTodo)="addTodoItem()"></app-todo-item>
+      <ng-container *ngFor="let item of visibleItems">
+        <app-todo-item [item]="item" [userID]="userID"></app-todo-item>
+        <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="!list.keepDone" class="finished-items">
+    <mat-card-header>
+      <mat-card-title>
+        Abgeschlossene Aufgaben
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-todo-item *ngFor="let item of finishedItems" [item]="item" [userID]="userID"></app-todo-item>
     </mat-card-content>
   </mat-card>
 </div>

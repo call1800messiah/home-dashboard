@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, switchMap } from 'rxjs';
 
+import type { TodoItem } from '../../models/todo-item';
 import type { TodoList } from '../../models/todo-list';
 import { TodoService } from '../../services/todo.service';
 import { EditTodoListComponent } from '../edit-todo-list/edit-todo-list.component';
@@ -19,6 +20,8 @@ import { EditTodoItemComponent } from '../edit-todo-item/edit-todo-item.componen
 export class ListComponent implements OnInit, OnDestroy {
   list!: TodoList;
   userID!: string;
+  finishedItems: TodoItem[] = [];
+  visibleItems: TodoItem[] = [];
   private subscription = new Subscription();
 
   constructor(
@@ -45,6 +48,8 @@ export class ListComponent implements OnInit, OnDestroy {
       ).subscribe((list) => {
         if (list) {
           this.list = list;
+          this.finishedItems = list.items.filter(item => item.done);
+          this.visibleItems = list.keepDone ? list.items : list.items.filter(item => !item.done);
         }
       })
     );

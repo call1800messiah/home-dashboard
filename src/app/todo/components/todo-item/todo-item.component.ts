@@ -1,6 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TodoItem } from '../../models/todo-item';
+import { Component, Input, OnInit } from '@angular/core';
+
+import type { TodoItem } from '../../models/todo-item';
 import { TodoService } from '../../services/todo.service';
+
+
 
 @Component({
   selector: 'app-todo-item',
@@ -10,7 +13,6 @@ import { TodoService } from '../../services/todo.service';
 export class TodoItemComponent implements OnInit {
   @Input() item!: TodoItem;
   @Input() userID!: string;
-  @Output() addTodo = new EventEmitter();
   editing: boolean = false;
   editContent: string = '';
 

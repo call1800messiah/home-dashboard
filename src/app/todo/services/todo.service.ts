@@ -4,13 +4,13 @@ import { map, take } from 'rxjs/operators';
 import firebase from 'firebase/compat/app';
 import FieldValue = firebase.firestore.FieldValue;
 
-import { TodoList } from '../models/todo-list';
+import type { TodoItem } from '../models/todo-item';
+import type { TodoItemDbo } from '../models/todo-item.dbo';
+import type { TodoList } from '../models/todo-list';
+import type { TodoListDbo } from '../models/todo-list.dbo';
 import { ApiService } from '../../core/services/api.service';
 import { DataService } from '../../core/services/data.service';
-import { TodoItem } from '../models/todo-item';
-import { TodoItemDbo } from '../models/todo-item.dbo';
 import { UtilService } from '../../core/services/util.service';
-import { TodoListDbo } from '../models/todo-list.dbo';
 
 
 
