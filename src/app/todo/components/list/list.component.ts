@@ -3,10 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, switchMap } from 'rxjs';
 
-import { TodoList } from '../../models/todo-list';
+import type { TodoList } from '../../models/todo-list';
 import { TodoService } from '../../services/todo.service';
 import { EditTodoListComponent } from '../edit-todo-list/edit-todo-list.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { EditTodoItemComponent } from '../edit-todo-item/edit-todo-item.component';
 
 
 
@@ -54,7 +55,12 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   addTodoItem() {
-
+    this.dialog.open(EditTodoItemComponent, {
+      data: {
+        listId: this.list.id,
+      },
+      width: '500px',
+    });
   }
 
   editList() {

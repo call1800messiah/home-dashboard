@@ -35,7 +35,7 @@ export class TodoItemComponent implements OnInit {
     };
     // @ts-ignore
     delete editedItem.id;
-    this.todoService.storeTodoItem(editedItem, this.item.id).then(() => {
+    this.todoService.storeEditedTodoItem(editedItem, this.item.id).then(() => {
       this.editing = false;
     });
   }
@@ -54,7 +54,7 @@ export class TodoItemComponent implements OnInit {
       delete doneItem.doneBy;
       delete doneItem.markedDone;
     }
-    this.todoService.storeTodoItem(doneItem, this.item.id).then();
+    this.todoService.storeEditedTodoItem(doneItem, this.item.id).then();
   }
 
   toggleEdit() {

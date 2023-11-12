@@ -10,6 +10,7 @@ import { DataService } from '../../core/services/data.service';
 import { TodoItem } from '../models/todo-item';
 import { TodoItemDbo } from '../models/todo-item.dbo';
 import { UtilService } from '../../core/services/util.service';
+import { TodoListDbo } from '../models/todo-list.dbo';
 
 
 
@@ -54,12 +55,37 @@ export class TodoService {
     return this.todoLists$.asObservable();
   }
 
-  storeTodoItem(item: Omit<TodoItem, 'id'>, id?: string): Promise<boolean> {
-    return this.data.store(this.serializeTodoItem(item, id), TodoService.collectionItems, id);
+  storeEditedTodoItem(item: Omit<TodoItem, 'id'>, itemId: string): Promise<boolean | string> {
+    return this.data.store(this.serializeTodoItem(item, itemId), TodoService.collectionItems, itemId);
+  }
+
+  async storeNewTodoItem(item: Omit<TodoItem, 'id'>, listId: string): Promise<boolean|string> {
+    const itemStored = await this.data.store(this.serializeTodoItem(item), TodoService.collectionItems);
+    if (itemStored && typeof itemStored === 'string') {
+      return this.addTodoItemToList({...item, id: itemStored}, listId);
+    }
+    return false;
   }
 
   storeTodoList(list: Omit<TodoList, 'id'>, id?: string): Promise<boolean|string> {
     return this.data.store(TodoService.serializeTodoList(list), TodoService.collectionLists, id);
+  }
+
+  private addTodoItemToList(item: TodoItem, listId: string): Promise<boolean|string> {
+    return new Promise((resolve) => {
+      this.getListById(listId).pipe(
+        take(1),
+      ).subscribe(list => {
+        if (list) {
+          list.items.push(item);
+          this.storeTodoList(list, listId).then((result) => {
+            resolve(result);
+          });
+        }
+
+        resolve(false);
+      });
+    });
   }
 
   private getTodoItems(): Observable<TodoItem[]> {
@@ -121,7 +147,10 @@ export class TodoService {
     }, []);
   }
 
-  private static serializeTodoList(list: Omit<TodoList, 'id'>): unknown {
-    return list;
+  private static serializeTodoList(list: Omit<TodoList, 'id'>): TodoListDbo {
+    return {
+      ...list,
+      items: list.items?.map((item) => item.id) || [],
+    };
   }
 }

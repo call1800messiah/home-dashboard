@@ -60,6 +60,7 @@ export class EditTodoListComponent implements OnInit, OnDestroy {
       ...this.listForm.value,
       edited: new Date(),
       editedBy: this.userID,
+      items: this.data?.list?.items ?? [],
     };
     if (!this.data?.list?.id) {
       list.author = this.userID;
