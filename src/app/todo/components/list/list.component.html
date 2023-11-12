@@ -1,19 +1,34 @@
 <div class="todo-list container medium" *ngIf="list">
   <h1>{{list.name}}</h1>
-  <button mat-fab type="button" color="accent" class="button-container-top" (click)="editList()">
-    <mat-icon>edit</mat-icon>
-  </button>
+
+  <div class="container-top-controls">
+    <button mat-fab type="button" color="secondary" (click)="toggleSorting()" title="Sortieren">
+      <mat-icon>drag_indicator</mat-icon>
+    </button>
+    <button mat-fab type="button" color="accent" (click)="editList()" title="Bearbeiten">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+
   <mat-card>
     <mat-card-content>
-      <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
-      <ng-container *ngFor="let item of visibleItems">
-        <app-todo-item [item]="item" [userID]="userID" [listId]="list.id"></app-todo-item>
+      <ng-container *ngIf="!allowSorting">
         <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
+        <ng-container *ngFor="let item of visibleItems">
+          <app-todo-item [item]="item" [userID]="userID" [listId]="list.id"></app-todo-item>
+          <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
+        </ng-container>
       </ng-container>
+
+      <div class="sort-list" cdkDropList *ngIf="allowSorting" (cdkDropListDropped)="onDrop($event)">
+        <div class="sort-item" *ngFor="let item of list.items" cdkDrag>
+          {{item.content}}
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card *ngIf="!list.keepDone" class="finished-items">
+  <mat-card *ngIf="!list.keepDone && !allowSorting" class="finished-items">
     <mat-card-header>
       <mat-card-title>
         Abgeschlossene Aufgaben

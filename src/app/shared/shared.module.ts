@@ -14,7 +14,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { FilterComponent } from './components/filter/filter.component';
-import { MatChip, MatChipsModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 
@@ -25,6 +26,7 @@ import { MatChip, MatChipsModule } from '@angular/material/chips';
   ],
   imports: [
     CommonModule,
+    DragDropModule,
     FormsModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -43,6 +45,7 @@ import { MatChip, MatChipsModule } from '@angular/material/chips';
   exports: [
     ConfirmDialogComponent,
     CommonModule,
+    DragDropModule,
     FilterComponent,
     FormsModule,
     MatAutocompleteModule,

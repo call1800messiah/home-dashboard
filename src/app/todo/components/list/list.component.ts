@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, switchMap } from 'rxjs';
 
@@ -18,6 +19,7 @@ import { EditTodoItemComponent } from '../edit-todo-item/edit-todo-item.componen
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit, OnDestroy {
+  allowSorting = false;
   list!: TodoList;
   userID!: string;
   finishedItems: TodoItem[] = [];
@@ -75,5 +77,23 @@ export class ListComponent implements OnInit, OnDestroy {
       },
       width: '500px',
     });
+  }
+
+  onDrop(event: CdkDragDrop<TodoItem[]>) {
+    // Sort the list of items
+    const items = [...this.list.items];
+    items.splice(event.currentIndex, 0, items.splice(event.previousIndex, 1)[0]);
+    const newList: TodoList = {
+      ...this.list,
+      items
+    };
+    this.todoService.storeTodoList({
+      ...this.list,
+      items
+    }, newList.id);
+  }
+
+  toggleSorting() {
+    this.allowSorting = !this.allowSorting;
   }
 }
