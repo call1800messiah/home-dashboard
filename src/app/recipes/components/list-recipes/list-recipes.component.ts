@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { RecipeService } from '../../services/recipe.service';
 import { Recipe } from '../../models/recipe';
 import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
+import { UtilService } from '../../../core/services/util.service';
 
 
 
@@ -33,7 +34,8 @@ export class ListRecipesComponent implements OnInit {
       this.filterText,
     ]).pipe(
       map(this.filterRecipesByText),
-    )
+      map((recipes) => recipes.sort(UtilService.orderByName)),
+    );
   }
 
   ngOnInit(): void {
