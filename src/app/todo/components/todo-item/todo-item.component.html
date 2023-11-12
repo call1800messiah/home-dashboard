@@ -4,6 +4,9 @@
   </div>
   <div class="content" (click)="toggleEdit()" *ngIf="!editing">
     {{item.content}}
+    <button *ngIf="listId" class="button-delete" mat-mini-fab type="button" color="warn" (click)="deleteItem()">
+      <mat-icon>delete</mat-icon>
+    </button>
   </div>
   <mat-form-field appearance="fill" class="editing-content" *ngIf="editing">
     <input matInput type="text" class="editing-content" [(ngModel)]="editContent" />

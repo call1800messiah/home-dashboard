@@ -12,6 +12,7 @@ import { TodoService } from '../../services/todo.service';
 })
 export class TodoItemComponent implements OnInit {
   @Input() item!: TodoItem;
+  @Input() listId!: string;
   @Input() userID!: string;
   editing: boolean = false;
   editContent: string = '';
@@ -40,6 +41,10 @@ export class TodoItemComponent implements OnInit {
     this.todoService.storeEditedTodoItem(editedItem, this.item.id).then(() => {
       this.editing = false;
     });
+  }
+
+  deleteItem() {
+    this.todoService.deleteTodoItem(this.item.id, this.listId).then();
   }
 
   toggleDone() {

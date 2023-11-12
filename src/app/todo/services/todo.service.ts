@@ -28,6 +28,11 @@ export class TodoService {
     private data: DataService,
   ) { }
 
+  async deleteTodoItem(itemId: string, listId: string): Promise<void> {
+    await this.deleteTodoItemFromList(itemId, listId);
+    await this.api.deleteDocumentFromCollection(itemId, TodoService.collectionItems);
+  }
+
   deleteTodoList(id: string): Promise<void> {
     return this.api.deleteDocumentFromCollection(id, TodoService.collectionLists);
   }
@@ -84,6 +89,25 @@ export class TodoService {
         }
 
         resolve(false);
+      });
+    });
+  }
+
+  private deleteTodoItemFromList(itemId: string, listId: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.getListById(listId).pipe(
+        take(1),
+      ).subscribe(list => {
+        if (list) {
+          const newList = {
+            ...list,
+            items: list.items.filter(item => item.id !== itemId),
+          };
+          // @ts-ignore
+          delete newList.id;
+          this.storeTodoList(newList, listId).then(() => {});
+        }
+        resolve();
       });
     });
   }

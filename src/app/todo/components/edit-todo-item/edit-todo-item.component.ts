@@ -15,6 +15,7 @@ import type { EditTodoItemData } from '../../models/edit-todo-item-data';
 export class EditTodoItemComponent implements OnInit, OnDestroy {
   itemForm = new UntypedFormGroup({
     content: new FormControl(''),
+    done: new FormControl(false),
   });
   private subscription = new Subscription();
   private userID!: string;

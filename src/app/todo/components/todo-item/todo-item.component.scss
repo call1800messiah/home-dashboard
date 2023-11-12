@@ -1,13 +1,27 @@
 .todo-item {
   align-items: center;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   gap: 5px;
+  position: relative;
 
   &.done .content {
     color: gray;
     text-decoration: line-through;
   }
+
+  &:hover .button-delete {
+    opacity: 1;
+  }
+}
+
+.button-delete {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 0.4s;
 }
 
 .done-check {
