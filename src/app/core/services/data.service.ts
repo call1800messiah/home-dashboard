@@ -26,7 +26,7 @@ export class DataService {
   }
 
 
-  store(item: any, collection: string, id?: string): Promise<boolean> {
+  store(item: any, collection: string, id?: string): Promise<boolean | string> {
     return new Promise((resolve) => {
       if (id) {
         this.api.updateDocumentInCollection(id, collection, item).then(() => {
@@ -38,7 +38,7 @@ export class DataService {
       } else {
         this.api.addDocumentToCollection(item, collection).then((reference) => {
           if (reference) {
-            resolve(true);
+            resolve(reference.id);
           } else {
             resolve(false);
           }

@@ -168,7 +168,7 @@ export class RecipeService {
     return recipeDBO;
   }
 
-  storeRecipe(recipe: Omit<Recipe, 'id'>, id?: string): Promise<boolean> {
+  storeRecipe(recipe: Omit<Recipe, 'id'>, id?: string): Promise<boolean|string> {
     return this.data.store(this.serializeRecipe(recipe, id), RecipeService.collection, id);
   }
 }

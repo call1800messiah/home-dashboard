@@ -58,7 +58,7 @@ export class TodoService {
     return this.data.store(this.serializeTodoItem(item, id), TodoService.collectionItems, id);
   }
 
-  storeTodoList(list: Omit<TodoList, 'id'>, id?: string): Promise<boolean> {
+  storeTodoList(list: Omit<TodoList, 'id'>, id?: string): Promise<boolean|string> {
     return this.data.store(TodoService.serializeTodoList(list), TodoService.collectionLists, id);
   }
 

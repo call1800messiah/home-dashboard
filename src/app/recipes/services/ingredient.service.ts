@@ -59,7 +59,7 @@ export class IngredientService {
     return this.ingredients$.asObservable();
   }
 
-  storeIngredient(ingredient: Omit<Ingredient, 'id'>, id?: string): Promise<boolean> {
+  storeIngredient(ingredient: Omit<Ingredient, 'id'>, id?: string): Promise<boolean|string> {
     return this.data.store(ingredient, IngredientService.collection, id);
   }
 }
