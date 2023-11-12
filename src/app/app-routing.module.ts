@@ -22,6 +22,11 @@ const routes: Routes = [
     canLoad: [AuthGuardService],
   },
   {
+    path: 'todo',
+    loadChildren: () => import('./todo/todo.module').then(m => m.TodoModule),
+    canLoad: [AuthGuardService],
+  },
+  {
     path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full'

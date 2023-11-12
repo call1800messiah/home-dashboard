@@ -1,0 +1,15 @@
+<div class="edit-todo-list">
+  <form [formGroup]="listForm" (ngSubmit)="save()" class="stacked-form">
+    <mat-form-field appearance="fill">
+      <input matInput type="text" id="name" formControlName="name" required />
+      <mat-label>Name</mat-label>
+    </mat-form-field>
+
+    <mat-checkbox id="keepDone" formControlName="keepDone">Abgehakte weiter anzeigen</mat-checkbox>
+
+    <div class="controls">
+      <button type="submit" mat-raised-button color="primary">Speichern</button>
+      <button type="button" mat-raised-button color="accent" (click)="close()">Abbrechen</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,14 @@
+<div class="edit-todo-item">
+  <form [formGroup]="itemForm" (ngSubmit)="save()" class="stacked-form">
+    <mat-form-field>
+      <input matInput type="text" id="content" formControlName="content" required>
+      <mat-label>Aufgabe</mat-label>
+    </mat-form-field>
+
+    <div class="controls">
+      <button type="submit" mat-raised-button color="primary">Speichern</button>
+      <button type="button" mat-raised-button color="accent" (click)="close()">Abbrechen</button>
+    </div>
+  </form>
+</div>
+

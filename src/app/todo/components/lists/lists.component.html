@@ -1,0 +1,13 @@
+<div class="todo-lists container medium">
+  <h1>Todo Listen</h1>
+  <button mat-fab type="button" color="primary" class="button-container-top" (click)="addList()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <mat-card *ngFor="let list of lists$ | async" mat-ripple class="list">
+    <mat-card-title (click)="goToList(list.id)">{{list.name}}</mat-card-title>
+    <button class="button-delete" mat-mini-fab type="button" color="warn" (click)="deleteTodoList(list.id, list.name)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </mat-card>
+</div>

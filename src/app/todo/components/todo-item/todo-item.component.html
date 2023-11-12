@@ -1,0 +1,22 @@
+<div class="todo-item" *ngIf="item" [ngClass]="{'done': item.done}">
+  <div class="done-check">
+    <mat-checkbox [ngModel]="item.done" (change)="toggleDone()"></mat-checkbox>
+  </div>
+  <div class="content" (click)="toggleEdit()" *ngIf="!editing">
+    {{item.content}}
+    <button *ngIf="listId" class="button-delete" mat-mini-fab type="button" color="warn" (click)="deleteItem()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <mat-form-field appearance="fill" class="editing-content" *ngIf="editing">
+    <input matInput type="text" class="editing-content" [(ngModel)]="editContent" />
+    <div matSuffix>
+      <button mat-icon-button (click)="confirmEdit()">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button (click)="cancelEdit()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </mat-form-field>
+</div>

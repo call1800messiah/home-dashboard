@@ -12,6 +12,10 @@ export class UtilService {
     return UtilService.orderByObjectProperty(a, b, 'name', true, true);
   }
 
+  static orderByOrder(a: { order: number }, b: { order: number }): 1 | -1 | 0 {
+    return UtilService.orderByObjectProperty(a, b, 'order', true);
+  }
+
 
   private static orderByObjectProperty(a: any, b: any, property: string, asc: boolean, local: boolean = false): 1 | -1 | 0 {
     if (local) {
