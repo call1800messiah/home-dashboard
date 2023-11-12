@@ -64,10 +64,10 @@ export class TodoService {
     return this.data.store(this.serializeTodoItem(item, itemId), TodoService.collectionItems, itemId);
   }
 
-  async storeNewTodoItem(item: Omit<TodoItem, 'id'>, listId: string): Promise<boolean|string> {
+  async storeNewTodoItem(item: Omit<TodoItem, 'id'>, listId: string, position: number): Promise<boolean|string> {
     const itemStored = await this.data.store(this.serializeTodoItem(item), TodoService.collectionItems);
     if (itemStored && typeof itemStored === 'string') {
-      return this.addTodoItemToList({...item, id: itemStored}, listId);
+      return this.addTodoItemToList({...item, id: itemStored}, listId, position);
     }
     return false;
   }
@@ -76,13 +76,13 @@ export class TodoService {
     return this.data.store(TodoService.serializeTodoList(list), TodoService.collectionLists, id);
   }
 
-  private addTodoItemToList(item: TodoItem, listId: string): Promise<boolean|string> {
+  private addTodoItemToList(item: TodoItem, listId: string, position: number): Promise<boolean|string> {
     return new Promise((resolve) => {
       this.getListById(listId).pipe(
         take(1),
       ).subscribe(list => {
         if (list) {
-          list.items.push(item);
+          list.items.splice(position, 0, item);
           this.storeTodoList(list, listId).then((result) => {
             resolve(result);
           });

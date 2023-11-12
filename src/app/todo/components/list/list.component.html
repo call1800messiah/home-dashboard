@@ -13,10 +13,10 @@
   <mat-card>
     <mat-card-content>
       <ng-container *ngIf="!allowSorting">
-        <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
-        <ng-container *ngFor="let item of visibleItems">
+        <app-add-todo-item (addTodoItem)="addTodoItemAfter()"></app-add-todo-item>
+        <ng-container *ngFor="let item of visibleItems;">
           <app-todo-item [item]="item" [userID]="userID" [listId]="list.id"></app-todo-item>
-          <app-add-todo-item (addTodoItem)="addTodoItem()"></app-add-todo-item>
+          <app-add-todo-item (addTodoItem)="addTodoItemAfter(item)"></app-add-todo-item>
         </ng-container>
       </ng-container>
 

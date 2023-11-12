@@ -61,7 +61,7 @@ export class EditTodoItemComponent implements OnInit, OnDestroy {
     if (!this.data?.item?.id) {
       item.author = this.userID;
       item.created = item.edited;
-      this.todoService.storeNewTodoItem(item, this.data.listId).then((result) => {
+      this.todoService.storeNewTodoItem(item, this.data.listId, this.data.position).then((result) => {
         this.dialogRef.close(result);
       });
     } else {

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, switchMap } from 'rxjs';
 
@@ -61,10 +61,11 @@ export class ListComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  addTodoItem() {
+  addTodoItemAfter(item?: TodoItem) {
     this.dialog.open(EditTodoItemComponent, {
       data: {
         listId: this.list.id,
+        position: item ? this.list.items.findIndex(listItem => listItem.id === item.id) + 1 : 0,
       },
       width: '500px',
     });
