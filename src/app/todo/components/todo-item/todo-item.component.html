@@ -1,9 +1,12 @@
-<div class="todo-item" *ngIf="item" [ngClass]="{'done': item.done}">
-  <div class="done-check">
-    <mat-checkbox [ngModel]="item.done" (change)="toggleDone()"></mat-checkbox>
-  </div>
-  <div class="content" (click)="toggleEdit()" *ngIf="!editing">
-    {{item.content}}
+<div class="todo-item" *ngIf="item" [ngClass]="{'done': item.done, 'editing': editing}">
+  <label for="{{'item-'+item.id}}" class="done-check">
+    <input type="checkbox" id="{{'item-'+item.id}}" [ngModel]="item.done" (change)="toggleDone()">
+  </label>
+  <div class="content" *ngIf="!editing">
+    <div class="text" (click)="toggleEdit()">{{item.content}}</div>
+    <button *ngIf="listId" class="button-add" mat-mini-fab type="button" color="accent" (click)="addAfter()">
+      <mat-icon>add</mat-icon>
+    </button>
     <button *ngIf="listId" class="button-delete" mat-mini-fab type="button" color="warn" (click)="deleteItem()">
       <mat-icon>delete</mat-icon>
     </button>
@@ -20,3 +23,4 @@
     </div>
   </mat-form-field>
 </div>
+<app-add-todo-item (addTodoItem)="addAfter()"></app-add-todo-item>

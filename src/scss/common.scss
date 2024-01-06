@@ -1,15 +1,15 @@
-@import './variables.scss';
+@import './scss-variables';
 
 .container {
-  margin: $content-spacing auto $content-spacing;
-  max-width: $container-width + ($container-padding * 2);
-  padding-left: $container-padding;
-  padding-right: $container-padding;
+  margin: var(--content-spacing) auto var(--content-spacing);
+  max-width: calc(var(--container-width) + (var(--container-padding) * 2));
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
   position: relative;
   width: 100%;
 
-  &.small { max-width: $container-width-small + ($container-padding * 2); }
-  &.medium { max-width: $container-width-medium + ($container-padding * 2); }
+  &.small { max-width: calc(var(--container-width-small) + (var(--container-padding) * 2)); }
+  &.medium { max-width: calc(var(--container-width-medium) + (var(--container-padding) * 2)); }
 }
 
 .flex-column {
@@ -43,14 +43,14 @@
 
 button.button-container-top {
   position: absolute;
-  right: $container-padding;
+  right: var(--container-padding);
   top: -16px;
 }
 
 .container-top-controls {
   display: flex;
   position: absolute;
-  right: $container-padding;
+  right: var(--container-padding);
   top: -16px;
 
   button {
@@ -98,4 +98,17 @@ button.button-container-top {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+@media (max-width: $break-sm) {
+  main {
+
+    .mat-card {
+      padding: 10px;
+    }
+    .mat-card-footer {
+      padding: 10px;
+      margin: 0 -10px -10px -10px;
+    }
+  }
 }

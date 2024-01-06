@@ -1,40 +1,103 @@
+@import './../../../../scss/scss-variables';
+
 .todo-item {
-  align-items: center;
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 5px;
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
-  gap: 5px;
+  height: 50px;
+  gap: 10px;
+  overflow: hidden;
+  padding: 0;
   position: relative;
 
   &.done .content {
     color: gray;
     text-decoration: line-through;
   }
-
-  &:hover .button-delete {
-    opacity: 1;
-  }
-}
-
-.button-delete {
-  opacity: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: opacity 0.4s;
 }
 
 .done-check {
   align-items: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px 0 0 5px;
+  cursor: pointer;
   display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-  height: 40px;
+  height: 50px;
   justify-content: center;
-  width: 40px;
+  width: 50px;
+
+  &:after {
+    content: '\e836';
+    font-family: 'Material Icons';
+    font-size: 35px;
+  }
+
+  .done & {
+    background-color: rgba(255, 255, 255, 0.05);
+
+    &:after {
+      color: #69f0ae;
+      content: '\e876';
+    }
+  }
+
+  input {
+    display: none;
+  }
 }
 
-.content,
+.content {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  padding-right: 5px;
+  width: 100%;
+
+  &:hover .button-delete {
+    opacity: 1;
+  }
+
+  .text {
+    flex: 1;
+  }
+}
+
+.button-add {
+  display: none;
+}
+
+.button-delete {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
 .editing-content {
   flex: 1;
+  margin-top: -3px;
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+
+
+@media (max-width: $break-sm) {
+  .todo-item {
+    margin-bottom: 5px;
+  }
+
+  .button-add {
+    display: block;
+  }
+
+  .button-delete {
+    opacity: 1;
+  }
+
+  app-add-todo-item {
+    display: none;
+  }
 }

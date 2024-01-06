@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import type { TodoItem } from '../../models/todo-item';
 import { TodoService } from '../../services/todo.service';
@@ -14,6 +14,7 @@ export class TodoItemComponent implements OnInit {
   @Input() item!: TodoItem;
   @Input() listId!: string;
   @Input() userID!: string;
+  @Output() addTodoItemAfter = new EventEmitter<TodoItem>();
   editing: boolean = false;
   editContent: string = '';
 
@@ -23,6 +24,12 @@ export class TodoItemComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+
+  addAfter() {
+    this.addTodoItemAfter.emit(this.item);
+  }
+
 
   cancelEdit() {
     this.editContent = '';
