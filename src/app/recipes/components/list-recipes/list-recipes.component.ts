@@ -4,8 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import type { Recipe } from '../../models/recipe';
 import { RecipeService } from '../../services/recipe.service';
-import { Recipe } from '../../models/recipe';
 import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
 import { UtilService } from '../../../core/services/util.service';
 
@@ -18,6 +18,7 @@ import { UtilService } from '../../../core/services/util.service';
 })
 export class ListRecipesComponent implements OnInit {
   filterText: BehaviorSubject<string>;
+  initialFilterText: string;
   recipeTypes = RecipeService.recipeTypes;
   recipes$: Observable<Recipe[]>;
 
@@ -26,7 +27,8 @@ export class ListRecipesComponent implements OnInit {
     private recipeService: RecipeService,
     private router: Router,
   ) {
-    this.filterText = new BehaviorSubject<string>('');
+    this.initialFilterText = localStorage.getItem('recipes-filter') || '';
+    this.filterText = new BehaviorSubject<string>(this.initialFilterText);
     this.recipes$ = combineLatest([
       this.recipeService.getRecipes().pipe(
         map((recipes) => recipes.filter((recipe) => !recipe.parent)),
@@ -57,6 +59,7 @@ export class ListRecipesComponent implements OnInit {
 
 
   onFilterChanged(text: string) {
+    localStorage.setItem('recipes-filter', text);
     this.filterText.next(text);
   }
 

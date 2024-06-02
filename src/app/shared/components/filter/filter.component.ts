@@ -8,16 +8,19 @@ import { debounceTime, distinctUntilChanged, startWith, Subscription } from 'rxj
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit, OnDestroy {
+  @Input() text!: string;
   @Input() placeholder!: string;
   @Output() filterChanged = new EventEmitter<string>();
-  textFilter: UntypedFormControl;
+  textFilter!: UntypedFormControl;
   subscription = new Subscription();
 
-  constructor() {
-    this.textFilter = new UntypedFormControl('');
+  constructor() {}
+
+  ngOnInit(): void {
+    this.textFilter = new UntypedFormControl(this.text || '');
     this.subscription.add(
       this.textFilter.valueChanges.pipe(
-        startWith(''),
+        startWith(this.text || ''),
         debounceTime(300),
         distinctUntilChanged(),
       ).subscribe((text) => {
@@ -26,11 +29,7 @@ export class FilterComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnInit(): void {
-  }
-
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
 }

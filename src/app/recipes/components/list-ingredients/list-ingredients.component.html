@@ -6,6 +6,7 @@
 
   <app-filter
     class="stacked-form"
+    [text]="initialFilterText"
     placeholder="Name, Typ ..."
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>

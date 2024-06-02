@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Ingredient } from '../../models/ingredient';
+import type { Ingredient } from '../../models/ingredient';
 import { IngredientService } from '../../services/ingredient.service';
 import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.component';
 
@@ -16,12 +16,14 @@ export class ListIngredientsComponent implements OnInit {
   filterText: BehaviorSubject<string>;
   ingredients$: Observable<Ingredient[]>;
   ingredientTypes = IngredientService.ingredientTypes;
+  initialFilterText: string;
 
   constructor(
     private dialog: MatDialog,
     private ingredientService: IngredientService,
   ) {
-    this.filterText = new BehaviorSubject<string>('');
+    this.initialFilterText = localStorage.getItem('ingredients-filter') || '';
+    this.filterText = new BehaviorSubject<string>(this.initialFilterText);
     this.ingredients$ = combineLatest([
       this.ingredientService.getIngredients(),
       this.filterText,
@@ -54,6 +56,7 @@ export class ListIngredientsComponent implements OnInit {
 
 
   onFilterChanged(text: string) {
+    localStorage.setItem('ingredients-filter', text);
     this.filterText.next(text);
   }
 
