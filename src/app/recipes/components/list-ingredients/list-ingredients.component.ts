@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Ingredient } from '../../models/ingredient';
+import type { Ingredient } from '../../models/ingredient';
 import { IngredientService } from '../../services/ingredient.service';
 import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.component';
 
