@@ -4,7 +4,7 @@
   "newProjectRoot": "projects",
   "cli": {
     "analytics": false,
-    "packageManager": "yarn"
+    "packageManager": "npm"
   },
   "projects": {
     "home-dashboard": {
