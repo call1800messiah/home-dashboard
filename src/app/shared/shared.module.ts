@@ -12,17 +12,21 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
-import { FilterComponent } from './components/filter/filter.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { FilterComponent } from './components/filter/filter.component';
+import { SelectOnFocusDirective } from './directives/select-on-focus.directive';
+import { FocusOnInitDirective } from './directives/focus-on-init.directive';
 
 
 
 @NgModule({
   declarations: [
     ConfirmDialogComponent,
-    FilterComponent
+    FilterComponent,
+    FocusOnInitDirective,
+    SelectOnFocusDirective,
   ],
   imports: [
     CommonModule,
@@ -47,6 +51,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     CommonModule,
     DragDropModule,
     FilterComponent,
+    FocusOnInitDirective,
     FormsModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -61,6 +66,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatSelectModule,
     MatTableModule,
     ReactiveFormsModule,
+    SelectOnFocusDirective,
   ]
 })
 export class SharedModule { }
