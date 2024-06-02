@@ -7,7 +7,7 @@
   <app-filter
     class="stacked-form"
     placeholder="Rezeptname, Zutat, Art, Beschreibung ..."
-    [text]="initialFilterText"
+    storageKey="recipes"
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>
 

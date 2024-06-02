@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged, startWith, Subscription } from 'rxj
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit, OnDestroy {
-  @Input() text!: string;
+  @Input() storageKey?: string;
   @Input() placeholder!: string;
   @Output() filterChanged = new EventEmitter<string>();
   textFilter!: UntypedFormControl;
@@ -17,14 +17,18 @@ export class FilterComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
-    this.textFilter = new UntypedFormControl(this.text || '');
+    const initialText = this.storageKey ? localStorage.getItem(`filter-${this.storageKey}`) || '' : '';
+    this.textFilter = new UntypedFormControl(initialText);
     this.subscription.add(
       this.textFilter.valueChanges.pipe(
-        startWith(this.text || ''),
+        startWith(initialText),
         debounceTime(300),
         distinctUntilChanged(),
       ).subscribe((text) => {
         this.filterChanged.emit(text);
+        if (this.storageKey) {
+          localStorage.setItem(`filter-${this.storageKey}`, text);
+        }
       })
     );
   }

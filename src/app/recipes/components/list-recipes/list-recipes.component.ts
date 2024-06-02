@@ -18,7 +18,6 @@ import { UtilService } from '../../../core/services/util.service';
 })
 export class ListRecipesComponent implements OnInit {
   filterText: BehaviorSubject<string>;
-  initialFilterText: string;
   recipeTypes = RecipeService.recipeTypes;
   recipes$: Observable<Recipe[]>;
 
@@ -27,8 +26,7 @@ export class ListRecipesComponent implements OnInit {
     private recipeService: RecipeService,
     private router: Router,
   ) {
-    this.initialFilterText = localStorage.getItem('recipes-filter') || '';
-    this.filterText = new BehaviorSubject<string>(this.initialFilterText);
+    this.filterText = new BehaviorSubject<string>('');
     this.recipes$ = combineLatest([
       this.recipeService.getRecipes().pipe(
         map((recipes) => recipes.filter((recipe) => !recipe.parent)),
@@ -59,7 +57,6 @@ export class ListRecipesComponent implements OnInit {
 
 
   onFilterChanged(text: string) {
-    localStorage.setItem('recipes-filter', text);
     this.filterText.next(text);
   }
 
