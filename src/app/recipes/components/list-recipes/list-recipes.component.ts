@@ -4,8 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import type { Recipe } from '../../models/recipe';
 import { RecipeService } from '../../services/recipe.service';
-import { Recipe } from '../../models/recipe';
 import { EditRecipeComponent } from '../edit-recipe/edit-recipe.component';
 import { UtilService } from '../../../core/services/util.service';
 
