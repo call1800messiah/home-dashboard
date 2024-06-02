@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardService  {
+export class AuthGuardService {
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -26,7 +26,7 @@ export class AuthGuardService  {
   }
 
 
-  canLoad(route: Route): Observable<boolean> {
+  canMatch(route: Route): Observable<boolean> {
     const url = `/${route.path}`;
     return this.checkLogin(url);
   }

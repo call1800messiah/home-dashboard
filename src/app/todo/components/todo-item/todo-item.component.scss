@@ -76,7 +76,7 @@
 .editing-content {
   flex: 1;
   margin-top: -3px;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
   .mat-form-field-wrapper {
     padding-bottom: 0;
   }

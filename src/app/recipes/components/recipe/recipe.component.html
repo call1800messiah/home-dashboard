@@ -4,7 +4,7 @@
   <button mat-fab type="button" color="accent" class="button-container-top" (click)="editRecipe(recipe)">
     <mat-icon>edit</mat-icon>
   </button>
-  <mat-card *ngIf="recipe" class="card">
+  <mat-card appearance="outlined" *ngIf="recipe" class="card">
     <mat-card-content>
       <div class="time">
         <app-recipe-time [time]="recipe.time"></app-recipe-time>
@@ -29,7 +29,7 @@
   </mat-card>
 
   <div class="children" *ngIf="recipe.children.length > 0">
-    <mat-card class="card recipe-child" *ngFor="let child of recipe.children">
+    <mat-card appearance="outlined" class="card recipe-child" *ngFor="let child of recipe.children">
       <mat-card-content>
         <h2 class="title">{{child.name}}</h2>
         <div class="time">

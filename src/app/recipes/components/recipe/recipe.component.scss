@@ -8,6 +8,7 @@
 }
 
 .recipe {
+  /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
   mat-card-content {
     font-size: 16px;
   }
