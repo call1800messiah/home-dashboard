@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -26,7 +26,6 @@ export class EditTodoListComponent implements OnInit, OnDestroy {
   constructor(
     private auth: AuthService,
     @Inject(MAT_DIALOG_DATA) public data: EditTodoListData,
-    private dialog: MatDialog,
     public dialogRef: MatDialogRef<EditTodoListComponent>,
     private todoService: TodoService,
   ) {
