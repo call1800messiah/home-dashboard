@@ -21,17 +21,6 @@ export class AuthGuardService {
   }
 
 
-  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.canActivate(route, state);
-  }
-
-
-  canMatch(route: Route): Observable<boolean> {
-    const url = `/${route.path}`;
-    return this.checkLogin(url);
-  }
-
-
   private checkLogin(url: string): Observable<boolean> {
     return this.authService.isLoggedIn().pipe(
       take(1),
