@@ -12,6 +12,7 @@
   ></app-filter>
 
   <mat-card
+    appearance="outlined"
     class="ingredient"
     *ngFor="let ingredient of ingredients$ | async"
     (click)="editIngredient(ingredient)"

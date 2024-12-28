@@ -23,6 +23,7 @@
   border-radius: 5px 0 0 5px;
   cursor: pointer;
   display: flex;
+  flex: 0 0 auto;
   height: 50px;
   justify-content: center;
   width: 50px;
@@ -76,10 +77,16 @@
 .editing-content {
   flex: 1;
   margin-top: -3px;
+  overflow: hidden;
 
-  .mat-form-field-wrapper {
-    padding-bottom: 0;
+  mat-form-field {
+    margin-left: -16px;
+    width: calc(100% + 16px);
   }
+}
+
+.editing-controls {
+  display: flex;
 }
 
 

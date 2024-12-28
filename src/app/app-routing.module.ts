@@ -14,17 +14,17 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
-    canLoad: [AuthGuardService],
+    canActivate: [AuthGuardService],
   },
   {
     path: 'recipes',
     loadChildren: () => import('./recipes/recipes.module').then(m => m.RecipesModule),
-    canLoad: [AuthGuardService],
+    canActivate: [AuthGuardService],
   },
   {
     path: 'todo',
     loadChildren: () => import('./todo/todo.module').then(m => m.TodoModule),
-    canLoad: [AuthGuardService],
+    canActivate: [AuthGuardService],
   },
   {
     path: '',

@@ -26,10 +26,6 @@ registerLocaleData(localeDE, 'de');
     AppComponent
   ],
   imports: [
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage()),
     BrowserModule,
     AppRoutingModule,
     CoreModule,
@@ -38,6 +34,10 @@ registerLocaleData(localeDE, 'de');
     MatSidenavModule,
   ],
   providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage()),
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     { provide: LOCALE_ID, useValue: 'de' },
   ],

@@ -8,6 +8,7 @@ import { EditTodoListComponent } from './components/edit-todo-list/edit-todo-lis
 import { TodoRoutingModule } from './todo-routing.module';
 import { AddTodoItemComponent } from './components/add-todo-item/add-todo-item.component';
 import { EditTodoItemComponent } from './components/edit-todo-item/edit-todo-item.component';
+import { SortItemComponent } from './components/sort-item/sort-item.component';
 
 
 
@@ -16,6 +17,7 @@ import { EditTodoItemComponent } from './components/edit-todo-item/edit-todo-ite
     ListsComponent,
     ListComponent,
     TodoItemComponent,
+    SortItemComponent,
     EditTodoListComponent,
     AddTodoItemComponent,
     EditTodoItemComponent

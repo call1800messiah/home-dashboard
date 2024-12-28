@@ -9,6 +9,7 @@ import type { TodoList } from '../../models/todo-list';
 import { TodoService } from '../../services/todo.service';
 import { EditTodoListComponent } from '../edit-todo-list/edit-todo-list.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { UtilService } from '../../../core/services/util.service';
 import { EditTodoItemComponent } from '../edit-todo-item/edit-todo-item.component';
 
 
@@ -50,7 +51,7 @@ export class ListComponent implements OnInit, OnDestroy {
       ).subscribe((list) => {
         if (list) {
           this.list = list;
-          this.finishedItems = list.items.filter(item => item.done);
+          this.finishedItems = list.items.filter(item => item.done).sort(UtilService.orderByContent);
           this.visibleItems = list.keepDone ? list.items : list.items.filter(item => !item.done);
         }
       })

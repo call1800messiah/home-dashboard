@@ -8,6 +8,10 @@ export class UtilService {
   constructor() { }
 
 
+  static orderByContent(a: { content: string }, b: { content: string }): 1 | -1 | 0 {
+    return UtilService.orderByObjectProperty(a, b, 'content', true, true);
+  }
+
   static orderByName(a: { name: string }, b: { name: string }): 1 | -1 | 0 {
     return UtilService.orderByObjectProperty(a, b, 'name', true, true);
   }

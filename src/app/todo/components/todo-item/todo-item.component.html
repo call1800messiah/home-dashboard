@@ -11,16 +11,18 @@
       <mat-icon>delete</mat-icon>
     </button>
   </div>
-  <mat-form-field appearance="fill" class="editing-content" *ngIf="editing">
-    <input matInput type="text" class="editing-content" [(ngModel)]="editContent" />
-    <div matSuffix>
-      <button mat-icon-button (click)="confirmEdit()">
-        <mat-icon>check</mat-icon>
-      </button>
-      <button mat-icon-button (click)="cancelEdit()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-  </mat-form-field>
+  <div class="editing-content" *ngIf="editing">
+    <mat-form-field appearance="fill">
+      <input matInput type="text" [(ngModel)]="editContent" />
+      <div class="editing-controls" matSuffix>
+        <button mat-icon-button (click)="confirmEdit()">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-icon-button (click)="cancelEdit()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-form-field>
+  </div>
 </div>
 <app-add-todo-item (addTodoItem)="addAfter()"></app-add-todo-item>
