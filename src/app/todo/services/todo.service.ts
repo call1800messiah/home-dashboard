@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
+import { deleteField } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import firebase from 'firebase/compat/app';
-import FieldValue = firebase.firestore.FieldValue;
 
 import type { TodoItem } from '../models/todo-item';
 import type { TodoItemDbo } from '../models/todo-item.dbo';
@@ -135,10 +134,10 @@ export class TodoService {
         if (currentItem) {
           console.log(currentItem, updateItem);
           if (updateItem.markedDone === undefined && currentItem.markedDone !== undefined) {
-            updateItem.markedDone = FieldValue.delete();
+            updateItem.markedDone = deleteField();
           }
           if (updateItem.doneBy === undefined && currentItem.doneBy !== undefined) {
-            updateItem.doneBy = FieldValue.delete();
+            updateItem.doneBy = deleteField();
           }
         }
       });
