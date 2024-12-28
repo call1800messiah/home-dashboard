@@ -10,7 +10,7 @@
     </button>
   </div>
 
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-content>
       <ng-container *ngIf="!allowSorting">
         <app-add-todo-item (addTodoItem)="addTodoItemAfter()"></app-add-todo-item>
@@ -24,14 +24,12 @@
       </ng-container>
 
       <div class="sort-list" cdkDropList *ngIf="allowSorting" (cdkDropListDropped)="onDrop($event)">
-        <div class="sort-item" *ngFor="let item of list.items" cdkDrag>
-          {{item.content}}
-        </div>
+        <app-sort-item [item]="item" *ngFor="let item of list.items">{{item.content}}</app-sort-item>
       </div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card *ngIf="!list.keepDone && !allowSorting" class="finished-items">
+  <mat-card appearance="outlined" *ngIf="!list.keepDone && !allowSorting" class="finished-items">
     <mat-card-header>
       <mat-card-title>
         Abgeschlossene Aufgaben

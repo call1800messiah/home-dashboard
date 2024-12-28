@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
+import { deleteField, FieldValue } from '@angular/fire/firestore';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import firebase from 'firebase/compat/app';
-import FieldValue = firebase.firestore.FieldValue;
 
 import { Recipe } from '../models/recipe';
 import { ApiService } from '../../core/services/api.service';
@@ -139,8 +138,8 @@ export class RecipeService {
         }
         currentRecipe.requirements.forEach((requirement) => {
           if (!ingredients[requirement.ingredient.id]) {
-            ingredients[requirement.ingredient.id] = FieldValue.delete();
-            ingredientUnits[requirement.ingredient.id] = FieldValue.delete();
+            ingredients[requirement.ingredient.id] = deleteField();
+            ingredientUnits[requirement.ingredient.id] = deleteField();
           }
         });
       })
@@ -155,7 +154,7 @@ export class RecipeService {
       name: recipe.name,
       summary: recipe.summary || '',
       time: (recipe.time?.hours ?? 0) + ((recipe.time?.minutes ?? 0) / 60),
-      type: recipe.type ?? FieldValue.delete(),
+      type: recipe.type ?? deleteField(),
     };
     if (!recipeId) {
       recipeDBO.author = recipe.author;

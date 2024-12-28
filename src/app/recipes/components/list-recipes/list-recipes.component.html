@@ -11,7 +11,7 @@
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>
 
-  <mat-card *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
+  <mat-card appearance="outlined" *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
     <mat-card-title class="title">{{recipe.name}}</mat-card-title>
 
     <mat-card-content>
