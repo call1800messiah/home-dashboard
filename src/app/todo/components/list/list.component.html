@@ -24,9 +24,7 @@
       </ng-container>
 
       <div class="sort-list" cdkDropList *ngIf="allowSorting" (cdkDropListDropped)="onDrop($event)">
-        <div class="sort-item" *ngFor="let item of list.items" cdkDrag>
-          {{item.content}}
-        </div>
+        <app-sort-item [item]="item" *ngFor="let item of list.items">{{item.content}}</app-sort-item>
       </div>
     </mat-card-content>
   </mat-card>
