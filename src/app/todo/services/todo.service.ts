@@ -85,9 +85,9 @@ export class TodoService {
           this.storeTodoList(list, listId).then((result) => {
             resolve(result);
           });
+        } else {
+          resolve(false);
         }
-
-        resolve(false);
       });
     });
   }
@@ -104,9 +104,12 @@ export class TodoService {
           };
           // @ts-ignore
           delete newList.id;
-          this.storeTodoList(newList, listId).then(() => {});
+          this.storeTodoList(newList, listId).then(() => {
+            resolve();
+          });
+        } else {
+          resolve();
         }
-        resolve();
       });
     });
   }
