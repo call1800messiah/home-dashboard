@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import firebase from 'firebase/compat';
+import type firebase from 'firebase/compat/app';
 
 import { ApiService } from './api.service';
 import { AuthUser } from '../../auth/models/auth-user';

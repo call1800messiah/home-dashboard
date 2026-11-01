@@ -1,28 +1,38 @@
-<div class="todo-item" *ngIf="item" [ngClass]="{'done': item.done, 'editing': editing}">
-  <label for="{{'item-'+item.id}}" class="done-check">
-    <input type="checkbox" id="{{'item-'+item.id}}" [ngModel]="item.done" (change)="toggleDone()">
-  </label>
-  <div class="content" *ngIf="!editing">
-    <div class="text" (click)="toggleEdit()">{{item.content}}</div>
-    <button *ngIf="listId" class="button-add" mat-mini-fab type="button" color="accent" (click)="addAfter()">
-      <mat-icon>add</mat-icon>
-    </button>
-    <button *ngIf="listId" class="button-delete" mat-mini-fab type="button" color="warn" (click)="deleteItem()">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </div>
-  <div class="editing-content" *ngIf="editing">
-    <mat-form-field appearance="fill">
-      <input matInput type="text" [(ngModel)]="editContent" />
-      <div class="editing-controls" matSuffix>
-        <button mat-icon-button (click)="confirmEdit()">
-          <mat-icon>check</mat-icon>
-        </button>
-        <button mat-icon-button (click)="cancelEdit()">
-          <mat-icon>close</mat-icon>
-        </button>
+@if (item) {
+  <div class="todo-item" [ngClass]="{'done': item.done, 'editing': editing}">
+    <label for="{{'item-'+item.id}}" class="done-check">
+      <input type="checkbox" id="{{'item-'+item.id}}" [ngModel]="item.done" (change)="toggleDone()">
+    </label>
+    @if (!editing) {
+      <div class="content">
+        <div class="text" (click)="toggleEdit()">{{item.content}}</div>
+        @if (listId) {
+          <button class="button-add" mat-mini-fab type="button" color="accent" (click)="addAfter()">
+            <mat-icon>add</mat-icon>
+          </button>
+        }
+        @if (listId) {
+          <button class="button-delete" mat-mini-fab type="button" color="warn" (click)="deleteItem()">
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
       </div>
-    </mat-form-field>
+    }
+    @if (editing) {
+      <div class="editing-content">
+        <mat-form-field appearance="fill">
+          <input matInput type="text" [(ngModel)]="editContent" />
+          <div class="editing-controls" matSuffix>
+            <button mat-icon-button (click)="confirmEdit()">
+              <mat-icon>check</mat-icon>
+            </button>
+            <button mat-icon-button (click)="cancelEdit()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+      </div>
+    }
   </div>
-</div>
+}
 <app-add-todo-item (addTodoItem)="addAfter()"></app-add-todo-item>

@@ -7,9 +7,11 @@
 
     <mat-form-field appearance="fill">
       <mat-select id="type" formControlName="type" required>
-        <mat-option [value]="type['key']" *ngFor="let type of ingredientTypes;">
-          {{type['value']}}
-        </mat-option>
+        @for (type of ingredientTypes; track type) {
+          <mat-option [value]="type['key']">
+            {{type['value']}}
+          </mat-option>
+        }
       </mat-select>
       <mat-label>Typ</mat-label>
     </mat-form-field>

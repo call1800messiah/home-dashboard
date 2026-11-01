@@ -1,5 +1,11 @@
-<div class="time" *ngIf="time">
-  <div class="duration">{{getDisplayTime()}}</div>
-  <div *ngIf="!time.hours" class="label"> min</div>
-  <div *ngIf="time.hours" class="label"> std</div>
-</div>
+@if (time) {
+  <div class="time">
+    <div class="duration">{{getDisplayTime()}}</div>
+    @if (!time.hours) {
+      <div class="label"> min</div>
+    }
+    @if (time.hours) {
+      <div class="label"> std</div>
+    }
+  </div>
+}

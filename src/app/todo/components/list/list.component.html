@@ -1,42 +1,49 @@
-<div class="todo-list container medium" *ngIf="list">
-  <h1>{{list.name}}</h1>
-
-  <div class="container-top-controls">
-    <button mat-fab type="button" color="{{allowSorting ? 'accent' : undefined }}" (click)="toggleSorting()" title="Sortieren">
-      <mat-icon>drag_indicator</mat-icon>
-    </button>
-    <button mat-fab type="button" color="accent" (click)="editList()" title="Bearbeiten">
-      <mat-icon>edit</mat-icon>
-    </button>
+@if (list) {
+  <div class="todo-list container medium">
+    <h1>{{list.name}}</h1>
+    <div class="container-top-controls">
+      <button mat-fab type="button" color="{{allowSorting ? 'accent' : undefined }}" (click)="toggleSorting()" title="Sortieren">
+        <mat-icon>drag_indicator</mat-icon>
+      </button>
+      <button mat-fab type="button" color="accent" (click)="editList()" title="Bearbeiten">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        @if (!allowSorting) {
+          <app-add-todo-item (addTodoItem)="addTodoItemAfter()"></app-add-todo-item>
+          @for (item of visibleItems; track item) {
+            <app-todo-item
+              [listId]="list.id"
+              [item]="item"
+              [userID]="userID"
+              (addTodoItemAfter)="addTodoItemAfter($event)"
+            ></app-todo-item>
+          }
+        }
+        @if (allowSorting) {
+          <div class="sort-list" cdkDropList (cdkDropListDropped)="onDrop($event)">
+            @for (item of list.items; track item) {
+              <app-sort-item [item]="item">{{item.content}}</app-sort-item>
+            }
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+    @if (!list.keepDone && !allowSorting) {
+      <mat-card appearance="outlined" class="finished-items">
+        <mat-card-header>
+          <mat-card-title>
+            Abgeschlossene Aufgaben
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @for (item of finishedItems; track item) {
+            <app-todo-item [item]="item" [userID]="userID" [listId]="list.id"></app-todo-item>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
   </div>
-
-  <mat-card appearance="outlined">
-    <mat-card-content>
-      <ng-container *ngIf="!allowSorting">
-        <app-add-todo-item (addTodoItem)="addTodoItemAfter()"></app-add-todo-item>
-        <app-todo-item
-          *ngFor="let item of visibleItems;"
-          [listId]="list.id"
-          [item]="item"
-          [userID]="userID"
-          (addTodoItemAfter)="addTodoItemAfter($event)"
-        ></app-todo-item>
-      </ng-container>
-
-      <div class="sort-list" cdkDropList *ngIf="allowSorting" (cdkDropListDropped)="onDrop($event)">
-        <app-sort-item [item]="item" *ngFor="let item of list.items">{{item.content}}</app-sort-item>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card appearance="outlined" *ngIf="!list.keepDone && !allowSorting" class="finished-items">
-    <mat-card-header>
-      <mat-card-title>
-        Abgeschlossene Aufgaben
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <app-todo-item *ngFor="let item of finishedItems" [item]="item" [userID]="userID" [listId]="list.id"></app-todo-item>
-    </mat-card-content>
-  </mat-card>
-</div>
+}

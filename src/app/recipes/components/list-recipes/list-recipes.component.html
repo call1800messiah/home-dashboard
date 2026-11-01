@@ -11,26 +11,31 @@
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>
 
-  <mat-card appearance="outlined" *ngFor="let recipe of recipes$ | async" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
-    <mat-card-title class="title">{{recipe.name}}</mat-card-title>
-
-    <mat-card-content>
-      <div class="time">
-        <app-recipe-time [time]="recipe.time"></app-recipe-time>
-      </div>
-      {{recipe.summary}}
-    </mat-card-content>
-
-    <mat-card-footer>
-      <div class="ingredients" *ngIf="recipe.requirements.length > 0">
-        Zutaten:
-        <span *ngFor="let requirement of recipe.requirements" class="ingredient">
-          {{requirement.ingredient.name}}</span>
-      </div>
-
-      <div class="type mat-accent" *ngIf="recipe.type">
-        {{recipeTypes[recipe.type]}}
-      </div>
-    </mat-card-footer>
-  </mat-card>
+  @for (recipe of recipes$ | async; track recipe) {
+    <mat-card appearance="outlined" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
+      <mat-card-title class="title">{{recipe.name}}</mat-card-title>
+      <mat-card-content>
+        <div class="time">
+          <app-recipe-time [time]="recipe.time"></app-recipe-time>
+        </div>
+        {{recipe.summary}}
+      </mat-card-content>
+      <mat-card-footer>
+        @if (recipe.requirements.length > 0) {
+          <div class="ingredients">
+            Zutaten:
+            @for (requirement of recipe.requirements; track requirement) {
+              <span class="ingredient">
+              {{requirement.ingredient.name}}</span>
+            }
+          </div>
+        }
+        @if (recipe.type) {
+          <div class="type mat-accent">
+            {{recipeTypes[recipe.type]}}
+          </div>
+        }
+      </mat-card-footer>
+    </mat-card>
+  }
 </div>

@@ -1,23 +1,24 @@
 <aside class="sidebar">
-  <div *ngIf="isLoggedIn | async">
-    <nav>
-      <ul class="unstyled-list">
-        <li>
-          <a mat-button href="/">Dashboard</a>
-        </li>
-        <li>
-          <a mat-button href="/recipes">Rezepte</a>
-
-          <ul class="unstyled-list">
-            <li>
-              <a mat-button href="/recipes/ingredients">Zutaten</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-    <nav class="flex-column">
-      <a mat-button href="/todo">Todo</a>
-    </nav>
-  </div>
+  @if (isLoggedIn | async) {
+    <div>
+      <nav>
+        <ul class="unstyled-list">
+          <li>
+            <a mat-button href="/">Dashboard</a>
+          </li>
+          <li>
+            <a mat-button href="/recipes">Rezepte</a>
+            <ul class="unstyled-list">
+              <li>
+                <a mat-button href="/recipes/ingredients">Zutaten</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <nav class="flex-column">
+        <a mat-button href="/todo">Todo</a>
+      </nav>
+    </div>
+  }
 </aside>

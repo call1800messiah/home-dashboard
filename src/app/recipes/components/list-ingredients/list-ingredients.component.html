@@ -11,19 +11,20 @@
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>
 
-  <mat-card
-    appearance="outlined"
-    class="ingredient"
-    *ngFor="let ingredient of ingredients$ | async"
-    (click)="editIngredient(ingredient)"
-    mat-ripple
-  >
-    <mat-card-title>{{ingredient.name}}</mat-card-title>
-    <div class="type">
-      {{ingredientTypes[ingredient.type]}}
-    </div>
-    <button class="button-edit" mat-mini-fab type="button">
-      <mat-icon>edit</mat-icon>
-    </button>
-  </mat-card>
+  @for (ingredient of ingredients$ | async; track ingredient) {
+    <mat-card
+      appearance="outlined"
+      class="ingredient"
+      (click)="editIngredient(ingredient)"
+      mat-ripple
+      >
+      <mat-card-title>{{ingredient.name}}</mat-card-title>
+      <div class="type">
+        {{ingredientTypes[ingredient.type]}}
+      </div>
+      <button class="button-edit" mat-mini-fab type="button">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-card>
+  }
 </div>

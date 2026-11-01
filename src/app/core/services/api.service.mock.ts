@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import type { DocumentReference, QueryFn } from '@angular/fire/compat/firestore';
 import { FieldValue, Timestamp } from '@angular/fire/firestore';
-import type firebase from 'firebase/compat/';
+import type firebase from 'firebase/compat/app';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 

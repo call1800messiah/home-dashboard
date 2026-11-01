@@ -1,18 +1,19 @@
-<div class="ingredient-list" *ngIf="requirements">
-  <table mat-table [dataSource]="requirements" class="table">
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Zutat</th>
-      <td mat-cell *matCellDef="let ingredient">{{ingredient.ingredient.name}}</td>
-    </ng-container>
-    <ng-container matColumnDef="amount">
-      <th mat-header-cell *matHeaderCellDef>Menge</th>
-      <td mat-cell *matCellDef="let ingredient">
-        {{ingredient.amount > 0 ? ingredient.amount * servings : ''}}
-        {{ingredient.unit}}
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-</div>
+@if (requirements) {
+  <div class="ingredient-list">
+    <table mat-table [dataSource]="requirements" class="table">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Zutat</th>
+        <td mat-cell *matCellDef="let ingredient">{{ingredient.ingredient.name}}</td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Menge</th>
+        <td mat-cell *matCellDef="let ingredient">
+          {{ingredient.amount > 0 ? ingredient.amount * servings : ''}}
+          {{ingredient.unit}}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+}
