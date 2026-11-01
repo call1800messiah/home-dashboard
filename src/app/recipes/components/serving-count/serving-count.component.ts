@@ -3,9 +3,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 
 @Component({
-  selector: 'app-serving-count',
-  templateUrl: './serving-count.component.html',
-  styleUrls: ['./serving-count.component.scss']
+    selector: 'app-serving-count',
+    templateUrl: './serving-count.component.html',
+    styleUrls: ['./serving-count.component.scss'],
+    standalone: false
 })
 export class ServingCountComponent implements OnInit {
   @Output() servingsChanged = new EventEmitter<number>();

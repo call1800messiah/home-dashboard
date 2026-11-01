@@ -11,9 +11,10 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 
 
 @Component({
-  selector: 'app-lists',
-  templateUrl: './lists.component.html',
-  styleUrls: ['./lists.component.scss']
+    selector: 'app-lists',
+    templateUrl: './lists.component.html',
+    styleUrls: ['./lists.component.scss'],
+    standalone: false
 })
 export class ListsComponent implements OnInit {
   public lists$: Observable<TodoList[]>

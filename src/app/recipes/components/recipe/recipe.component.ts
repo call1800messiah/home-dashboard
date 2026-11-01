@@ -11,9 +11,10 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 
 
 @Component({
-  selector: 'app-recipe',
-  templateUrl: './recipe.component.html',
-  styleUrls: ['./recipe.component.scss']
+    selector: 'app-recipe',
+    templateUrl: './recipe.component.html',
+    styleUrls: ['./recipe.component.scss'],
+    standalone: false
 })
 export class RecipeComponent implements OnInit, OnDestroy {
   recipe!: Recipe;

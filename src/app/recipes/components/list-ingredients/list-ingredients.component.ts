@@ -8,9 +8,10 @@ import { IngredientService } from '../../services/ingredient.service';
 import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.component';
 
 @Component({
-  selector: 'app-list-ingredients',
-  templateUrl: './list-ingredients.component.html',
-  styleUrls: ['./list-ingredients.component.scss']
+    selector: 'app-list-ingredients',
+    templateUrl: './list-ingredients.component.html',
+    styleUrls: ['./list-ingredients.component.scss'],
+    standalone: false
 })
 export class ListIngredientsComponent implements OnInit {
   filterText: BehaviorSubject<string>;

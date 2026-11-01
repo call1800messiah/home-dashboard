@@ -1,10 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { deleteField, serverTimestamp, Timestamp } from '@angular/fire/firestore';
 import { firstValueFrom } from 'rxjs';
 import { filter, skip, take } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
 import { ApiService } from './api.service.mock';
 
 
@@ -51,11 +49,7 @@ describe('ApiService (mock)', () => {
     fetchSpy = spyOn(window, 'fetch').and.callFake(
       async () => new Response(JSON.stringify(fixture()), { status: 200 }),
     );
-    TestBed.configureTestingModule({
-      providers: [provideFirebaseApp(() => initializeApp(environment.firebase))],
-    });
-    // deleteField() is zone-wrapped by AngularFire, whose schedulers are set up with the app.
-    TestBed.inject(FirebaseApp);
+    TestBed.configureTestingModule({});
     service = TestBed.inject(ApiService);
   });
 

@@ -11,9 +11,10 @@ import { TodoService } from '../../services/todo.service';
 
 
 @Component({
-  selector: 'app-edit-todo-list',
-  templateUrl: './edit-todo-list.component.html',
-  styleUrls: ['./edit-todo-list.component.scss']
+    selector: 'app-edit-todo-list',
+    templateUrl: './edit-todo-list.component.html',
+    styleUrls: ['./edit-todo-list.component.scss'],
+    standalone: false
 })
 export class EditTodoListComponent implements OnInit, OnDestroy {
   listForm =  new UntypedFormGroup({

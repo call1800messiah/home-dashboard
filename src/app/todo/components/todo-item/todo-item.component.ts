@@ -6,9 +6,10 @@ import { TodoService } from '../../services/todo.service';
 
 
 @Component({
-  selector: 'app-todo-item',
-  templateUrl: './todo-item.component.html',
-  styleUrls: ['./todo-item.component.scss']
+    selector: 'app-todo-item',
+    templateUrl: './todo-item.component.html',
+    styleUrls: ['./todo-item.component.scss'],
+    standalone: false
 })
 export class TodoItemComponent implements OnInit {
   @Input() item!: TodoItem;

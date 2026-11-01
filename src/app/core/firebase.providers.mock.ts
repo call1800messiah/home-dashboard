@@ -1,18 +1,10 @@
-import { ENVIRONMENT_INITIALIZER, inject } from '@angular/core';
-import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
-
-import { environment } from '../../environments/environment';
+import { Provider } from '@angular/core';
 
 
 
 /**
- * Replaces firebase.providers.ts in the `mock` build configuration. Starting Auth would
- * refresh any saved session against Firebase, so it stays out, along with Firestore and
- * Storage. The app itself is still needed: it sets up the schedulers that AngularFire's
- * wrapped functions, such as deleteField(), rely on. It is lazy and nothing else here
- * injects it, so it is created explicitly. Initializing it makes no requests.
+ * Replaces firebase.providers.ts in the `mock` build configuration. Nothing in mock mode
+ * uses a Firebase service, and starting Auth would refresh any saved session against
+ * Firebase, so none of them are set up.
  */
-export const firebaseProviders = [
-  provideFirebaseApp(() => initializeApp(environment.firebase)),
-  { provide: ENVIRONMENT_INITIALIZER, multi: true, useValue: () => inject(FirebaseApp) },
-];
+export const firebaseProviders: Provider[] = [];

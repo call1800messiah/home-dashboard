@@ -16,9 +16,10 @@ import { AuthService } from '../../../core/services/auth.service';
 
 
 @Component({
-  selector: 'app-add-recipe',
-  templateUrl: './edit-recipe.component.html',
-  styleUrls: ['./edit-recipe.component.scss']
+    selector: 'app-add-recipe',
+    templateUrl: './edit-recipe.component.html',
+    styleUrls: ['./edit-recipe.component.scss'],
+    standalone: false
 })
 export class EditRecipeComponent implements OnInit, OnDestroy {
   requirements!: IngredientRequirement[];

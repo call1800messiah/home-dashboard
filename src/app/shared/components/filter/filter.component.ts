@@ -3,9 +3,10 @@ import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, startWith, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss']
+    selector: 'app-filter',
+    templateUrl: './filter.component.html',
+    styleUrls: ['./filter.component.scss'],
+    standalone: false
 })
 export class FilterComponent implements OnInit, OnDestroy {
   @Input() storageKey?: string;

@@ -12,9 +12,10 @@ import { UtilService } from '../../../core/services/util.service';
 
 
 @Component({
-  selector: 'app-list-recipes',
-  templateUrl: './list-recipes.component.html',
-  styleUrls: ['./list-recipes.component.scss']
+    selector: 'app-list-recipes',
+    templateUrl: './list-recipes.component.html',
+    styleUrls: ['./list-recipes.component.scss'],
+    standalone: false
 })
 export class ListRecipesComponent implements OnInit {
   filterText: BehaviorSubject<string>;

@@ -6,9 +6,10 @@ import { Ingredient } from '../../models/ingredient';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-ingredient',
-  templateUrl: './edit-ingredient.component.html',
-  styleUrls: ['./edit-ingredient.component.scss']
+    selector: 'app-edit-ingredient',
+    templateUrl: './edit-ingredient.component.html',
+    styleUrls: ['./edit-ingredient.component.scss'],
+    standalone: false
 })
 export class EditIngredientComponent implements OnInit {
   ingredientForm = new UntypedFormGroup({

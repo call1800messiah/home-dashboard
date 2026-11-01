@@ -4,9 +4,10 @@ import { Time } from '@angular/common';
 
 
 @Component({
-  selector: 'app-recipe-time',
-  templateUrl: './recipe-time.component.html',
-  styleUrls: ['./recipe-time.component.scss']
+    selector: 'app-recipe-time',
+    templateUrl: './recipe-time.component.html',
+    styleUrls: ['./recipe-time.component.scss'],
+    standalone: false
 })
 export class RecipeTimeComponent implements OnInit {
   @Input() time!: Time;
