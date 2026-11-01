@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import type { TodoItem } from '../../models/todo-item';
 import { TodoService } from '../../services/todo.service';
@@ -9,6 +9,7 @@ import { TodoService } from '../../services/todo.service';
     selector: 'app-todo-item',
     templateUrl: './todo-item.component.html',
     styleUrls: ['./todo-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TodoItemComponent implements OnInit {

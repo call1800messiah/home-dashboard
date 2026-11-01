@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
@@ -14,6 +14,7 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
     selector: 'app-lists',
     templateUrl: './lists.component.html',
     styleUrls: ['./lists.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ListsComponent implements OnInit {

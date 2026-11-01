@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
@@ -11,6 +11,7 @@ import type { EditTodoItemData } from '../../models/edit-todo-item-data';
     selector: 'app-edit-todo-item',
     templateUrl: './edit-todo-item.component.html',
     styleUrls: ['./edit-todo-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditTodoItemComponent implements OnInit, OnDestroy {

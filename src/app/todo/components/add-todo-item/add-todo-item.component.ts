@@ -1,9 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-add-todo-item',
     templateUrl: './add-todo-item.component.html',
     styleUrls: ['./add-todo-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddTodoItemComponent implements OnInit {

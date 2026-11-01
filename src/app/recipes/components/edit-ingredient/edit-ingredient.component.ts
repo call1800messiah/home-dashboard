@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EditIngredientData } from '../../models/edit-ingredient-data';
 import { IngredientService } from '../../services/ingredient.service';
@@ -9,6 +9,7 @@ import { FormControl, UntypedFormGroup } from '@angular/forms';
     selector: 'app-edit-ingredient',
     templateUrl: './edit-ingredient.component.html',
     styleUrls: ['./edit-ingredient.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditIngredientComponent implements OnInit {

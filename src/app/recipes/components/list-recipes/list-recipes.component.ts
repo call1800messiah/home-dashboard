@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -15,6 +15,7 @@ import { UtilService } from '../../../core/services/util.service';
     selector: 'app-list-recipes',
     templateUrl: './list-recipes.component.html',
     styleUrls: ['./list-recipes.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ListRecipesComponent implements OnInit {

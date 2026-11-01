@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Time } from '@angular/common';
 
 
@@ -7,6 +7,7 @@ import { Time } from '@angular/common';
     selector: 'app-recipe-time',
     templateUrl: './recipe-time.component.html',
     styleUrls: ['./recipe-time.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RecipeTimeComponent implements OnInit {

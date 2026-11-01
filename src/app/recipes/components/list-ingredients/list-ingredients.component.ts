@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { EditIngredientComponent } from '../edit-ingredient/edit-ingredient.comp
     selector: 'app-list-ingredients',
     templateUrl: './list-ingredients.component.html',
     styleUrls: ['./list-ingredients.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ListIngredientsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription, switchMap } from 'rxjs';
@@ -14,6 +14,7 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
     selector: 'app-recipe',
     templateUrl: './recipe.component.html',
     styleUrls: ['./recipe.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RecipeComponent implements OnInit, OnDestroy {

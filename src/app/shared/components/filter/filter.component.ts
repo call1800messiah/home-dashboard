@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, startWith, Subscription } from 'rxjs';
 
@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged, startWith, Subscription } from 'rxj
     selector: 'app-filter',
     templateUrl: './filter.component.html',
     styleUrls: ['./filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FilterComponent implements OnInit, OnDestroy {

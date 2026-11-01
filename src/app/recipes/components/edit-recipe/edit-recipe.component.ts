@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { combineLatest, firstValueFrom, Observable, startWith, Subscription } from 'rxjs';
@@ -19,6 +19,7 @@ import { AuthService } from '../../../core/services/auth.service';
     selector: 'app-add-recipe',
     templateUrl: './edit-recipe.component.html',
     styleUrls: ['./edit-recipe.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditRecipeComponent implements OnInit, OnDestroy {
