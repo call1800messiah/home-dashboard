@@ -68,6 +68,31 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "mock": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                {
+                  "glob": "firestore-dump.json",
+                  "input": ".",
+                  "output": "/"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/app/core/services/api.service.ts",
+                  "with": "src/app/core/services/api.service.mock.ts"
+                },
+                {
+                  "replace": "src/app/core/firebase.providers.ts",
+                  "with": "src/app/core/firebase.providers.mock.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -80,6 +105,9 @@
             },
             "development": {
               "buildTarget": "home-dashboard:build:development"
+            },
+            "mock": {
+              "buildTarget": "home-dashboard:build:mock"
             }
           },
           "defaultConfiguration": "development"
