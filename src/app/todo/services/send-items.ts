@@ -3,6 +3,8 @@
  * See docs/superpowers/specs/2026-11-03-copy-items-between-lists-design.md.
  */
 
+import type { TodoItem } from '../models/todo-item';
+
 export interface SplitText {
   name: string;
   quantity?: string;
@@ -75,4 +77,105 @@ function isOneEditApart(a: string, b: string): boolean {
   }
   const rest = shorter.length === longer.length ? i + 1 : i;
   return shorter.slice(rest) === longer.slice(i + 1);
+}
+
+/** What a send did, as display lines for the summary dialog. */
+export interface SendSummary {
+  /** "Tomate → Tomaten": source name → target name, for every close match used. */
+  closeMatches: string[];
+  /** Target name, or a quantity change string when the quantity changed too. */
+  reopened: string[];
+  /** Quantity change strings for items that were already open. */
+  quantityChanged: string[];
+  /** Full text of each new item. */
+  added: string[];
+  /** Target name of each matched item that was already open and unchanged. */
+  alreadyOpen: string[];
+}
+
+/** A change to an existing target item. */
+export interface SendUpdate {
+  itemId: string;
+  content: string;
+  untick: boolean;
+}
+
+export interface SendPlan {
+  updates: SendUpdate[];
+  /** Text of each item to create, in source order. */
+  newItems: string[];
+  summary: SendSummary;
+}
+
+interface WorkingItem {
+  id: string;
+  content: string;
+  done: boolean;
+  /** Index into newItems for items this send creates. */
+  newIndex?: number;
+}
+
+/**
+ * Works out what sending `sourceItems` (the open items, in source order) to a list holding
+ * `targetItems` (in list order) does. Each source item sees the effect of the ones before it.
+ */
+export function planSend(sourceItems: TodoItem[], targetItems: TodoItem[]): SendPlan {
+  const working: WorkingItem[] = targetItems.map(({ id, content, done }) => ({ id, content, done }));
+  const updates = new Map<string, SendUpdate>();
+  const newItems: string[] = [];
+  const summary: SendSummary = { closeMatches: [], reopened: [], quantityChanged: [], added: [], alreadyOpen: [] };
+
+  for (const source of sourceItems) {
+    const { name: sourceName, quantity } = splitQuantity(source.content);
+    const match = findMatch(normalizeName(sourceName), working);
+    if (!match) {
+      working.push({ id: `new-${newItems.length}`, content: source.content, done: false, newIndex: newItems.length });
+      newItems.push(source.content);
+      summary.added.push(source.content);
+      continue;
+    }
+
+    const target = match.item;
+    const { name: targetName, quantity: targetQuantity } = splitQuantity(target.content);
+    if (match.close) {
+      summary.closeMatches.push(`${sourceName} → ${targetName}`);
+    }
+
+    const quantityChanged = quantity !== undefined && quantity !== targetQuantity;
+    const content = quantityChanged ? `${targetName} ${quantity}` : target.content;
+    const change = targetQuantity ? `${targetName} ${targetQuantity} → ${quantity}` : `${targetName} → ${quantity}`;
+    if (target.done) {
+      summary.reopened.push(quantityChanged ? change : targetName);
+    } else if (quantityChanged) {
+      summary.quantityChanged.push(change);
+    } else {
+      summary.alreadyOpen.push(targetName);
+      continue;
+    }
+
+    if (target.newIndex !== undefined) {
+      newItems[target.newIndex] = content;
+      summary.added[target.newIndex] = content;
+    } else {
+      const untick = (updates.get(target.id)?.untick ?? false) || target.done;
+      updates.set(target.id, { itemId: target.id, content, untick });
+    }
+    target.content = content;
+    target.done = false;
+  }
+
+  return { updates: [...updates.values()], newItems, summary };
+}
+
+/** Same name first, then a close name; among several, an open item, else the first. */
+function findMatch(name: string, items: WorkingItem[]): { item: WorkingItem; close: boolean } | undefined {
+  const named = items.map((item) => ({ item, name: normalizeName(splitQuantity(item.content).name) }));
+  const pick = (candidates: typeof named) => (candidates.find(({ item }) => !item.done) ?? candidates[0])?.item;
+
+  const same = pick(named.filter((candidate) => candidate.name === name));
+  if (same) {
+    return { item: same, close: false };
+  }
+  const close = pick(named.filter((candidate) => isCloseName(name, candidate.name)));
+  return close ? { item: close, close: true } : undefined;
 }
