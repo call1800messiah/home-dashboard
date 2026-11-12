@@ -1,0 +1,21 @@
+<div class="send-items">
+  <mat-form-field appearance="fill" class="target" subscriptSizing="dynamic">
+    <mat-label>Offene Einträge senden an</mat-label>
+    <mat-select [value]="targetId" (selectionChange)="selectTarget($event.value)">
+      @for (target of targets$ | async; track target.id) {
+        <mat-option [value]="target.id">{{target.name}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button
+    mat-flat-button
+    color="accent"
+    type="button"
+    class="send-button"
+    [disabled]="!targetId || !userID || sending"
+    (click)="send()"
+  >
+    <mat-icon>send</mat-icon>
+    Senden
+  </button>
+</div>

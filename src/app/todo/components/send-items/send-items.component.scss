@@ -1,0 +1,19 @@
+.send-items {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.target {
+  flex: 1;
+  min-width: 0;
+}
+
+.send-button {
+  flex-shrink: 0;
+  height: 48px;
+}

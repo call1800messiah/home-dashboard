@@ -48,4 +48,17 @@ describe('ListComponent', () => {
     expect(rowsAfter.length).toBe(2);
     rowsAfter.forEach((row, index) => expect(row).toBe(rowsBefore[index]));
   });
+
+  it('shows the send row only while not sorting', () => {
+    component.list = { id: 'list', author: 'u', created: new Date(0), edited: new Date(0), editedBy: 'u', items: [], keepDone: true, name: 'List' };
+    const render = () => {
+      fixture.componentRef.changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+      return fixture.nativeElement.querySelector('app-send-items');
+    };
+
+    expect(render()).not.toBeNull();
+    component.toggleSorting();
+    expect(render()).toBeNull();
+  });
 });
