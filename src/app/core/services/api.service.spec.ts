@@ -63,4 +63,12 @@ describe('ApiService outside an injection context', () => {
   it('can start reading a document', () => {
     expect(() => service.getItemFromCollection('items/id')).not.toThrow();
   });
+
+  it('can start a batch write', () => {
+    expect(() => service.batchWrite([{ collectionID: 'items', documentID: 'id', data: { a: 1 }, merge: true }])).not.toThrow();
+  });
+
+  it('creates document ids', () => {
+    expect(service.createId()).toMatch(/^\w{10,}$/);
+  });
 });

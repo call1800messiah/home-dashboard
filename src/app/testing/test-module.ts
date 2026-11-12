@@ -16,6 +16,8 @@ import { ApiService } from '../core/services/api.service';
  */
 const stubApi: Partial<Record<keyof ApiService, unknown>> = {
   addDocumentToCollection: () => Promise.resolve({ id: 'test-id' }),
+  batchWrite: () => Promise.resolve(),
+  createId: () => 'test-id',
   deleteDocumentFromCollection: () => Promise.resolve(),
   getAuthState: () => of(null),
   getDataFromCollection: () => of([]),

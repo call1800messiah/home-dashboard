@@ -110,6 +110,14 @@ function clone<T>(value: T): T {
   return isMap(value) ? mapValues(value, clone) as T : value;
 }
 
+/** Same shape as BatchSet in api.service.ts, which this file replaces in the mock build. */
+export interface BatchSet {
+  collectionID: string;
+  documentID: string;
+  data: object;
+  merge: boolean;
+}
+
 function generateId(): string {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   return Array.from({ length: 20 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join('');
@@ -131,6 +139,24 @@ export class ApiService {
     const collection = this.getCollection(collectionID);
     collection.next({ ...collection.value, [id]: data });
     return { id } as DocumentReference<unknown>;
+  }
+
+  /** Validates every operation before applying any, so a bad one changes nothing, like a Firestore batch. */
+  async batchWrite(operations: BatchSet[]): Promise<void> {
+    const writes = operations.map((operation) => ({
+      ...operation,
+      stored: toStored(operation.data, operation.merge) as DocumentData,
+    }));
+    await this.whenLoaded();
+    writes.forEach(({ collectionID, documentID, merge: mergeIntoExisting, stored }) => {
+      const collection = this.getCollection(collectionID);
+      const document = mergeIntoExisting ? merge(collection.value[documentID] ?? {}, stored) as DocumentData : stored;
+      collection.next({ ...collection.value, [documentID]: document });
+    });
+  }
+
+  createId(): string {
+    return generateId();
   }
 
   async deleteDocumentFromCollection(documentId: string, collectionID: string): Promise<void> {
