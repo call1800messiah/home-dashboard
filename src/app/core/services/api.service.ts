@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EnvironmentInjector, Injectable, runInInjectionContext } from '@angular/core';
 import { AngularFirestore, DocumentReference, QueryFn } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Observable } from 'rxjs';
@@ -13,15 +13,16 @@ export class ApiService {
   constructor(
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
+    private injector: EnvironmentInjector,
   ) {}
 
 
   addDocumentToCollection(document: any, collectionID: string): Promise<DocumentReference<unknown>> {
-    return this.afs.collection(collectionID).add(document);
+    return this.useFirestore((afs) => afs.collection(collectionID).add(document));
   }
 
   deleteDocumentFromCollection(documentId: string, collectionID: string): Promise<void> {
-    return this.afs.collection(collectionID).doc(documentId).delete();
+    return this.useFirestore((afs) => afs.collection(collectionID).doc(documentId).delete());
   }
 
   getAuthState(): Observable<firebase.User|null> {
@@ -29,11 +30,11 @@ export class ApiService {
   }
 
   getDataFromCollection(collectionID: string, queryFunction?: QueryFn<firebase.firestore.DocumentData>): Observable<any> {
-    return this.afs.collection(collectionID, queryFunction).valueChanges({ idField: 'id' });
+    return this.useFirestore((afs) => afs.collection(collectionID, queryFunction).valueChanges({ idField: 'id' }));
   }
 
   getItemFromCollection(path: string): Observable<any> {
-    return this.afs.doc(path).snapshotChanges();
+    return this.useFirestore((afs) => afs.doc(path).snapshotChanges());
   }
 
   login(email: string, password: string) {
@@ -45,6 +46,15 @@ export class ApiService {
   }
 
   updateDocumentInCollection(documentID: string, collectionID: string, data: any) {
-    return this.afs.collection(collectionID).doc(documentID).set(data, { merge: true });
+    return this.useFirestore((afs) => afs.collection(collectionID).doc(documentID).set(data, { merge: true }));
+  }
+
+
+  /**
+   * AngularFire's collection and document classes call inject() when constructed, which
+   * throws NG0203 in callers such as click handlers unless an injection context is provided.
+   */
+  private useFirestore<T>(operation: (afs: AngularFirestore) => T): T {
+    return runInInjectionContext(this.injector, () => operation(this.afs));
   }
 }
