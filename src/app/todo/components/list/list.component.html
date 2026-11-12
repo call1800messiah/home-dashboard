@@ -13,7 +13,7 @@
       <mat-card-content>
         @if (!allowSorting) {
           <app-add-todo-item (addTodoItem)="addTodoItemAfter()"></app-add-todo-item>
-          @for (item of visibleItems; track item) {
+          @for (item of visibleItems; track item.id) {
             <app-todo-item
               [listId]="list.id"
               [item]="item"
@@ -24,7 +24,7 @@
         }
         @if (allowSorting) {
           <div class="sort-list" cdkDropList (cdkDropListDropped)="onDrop($event)">
-            @for (item of list.items; track item) {
+            @for (item of list.items; track item.id) {
               <app-sort-item [item]="item">{{item.content}}</app-sort-item>
             }
           </div>
@@ -39,7 +39,7 @@
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          @for (item of finishedItems; track item) {
+          @for (item of finishedItems; track item.id) {
             <app-todo-item [item]="item" [userID]="userID" [listId]="list.id"></app-todo-item>
           }
         </mat-card-content>

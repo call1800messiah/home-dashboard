@@ -82,7 +82,7 @@
                 <input matInput type="text" id="new-name" formControlName="new-name" [matAutocomplete]="ingredientsAuto" />
                 <mat-label>Name</mat-label>
                 <mat-autocomplete #ingredientsAuto="matAutocomplete" [displayWith]="ingredientDisplayFn">
-                  @for (ingredient of ingredients$ | async; track ingredient) {
+                  @for (ingredient of ingredients$ | async; track ingredient.id) {
                     <mat-option [value]="ingredient">
                       {{ingredient.name}}
                     </mat-option>

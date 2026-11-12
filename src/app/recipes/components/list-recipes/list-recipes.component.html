@@ -11,7 +11,7 @@
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>
 
-  @for (recipe of recipes$ | async; track recipe) {
+  @for (recipe of recipes$ | async; track recipe.id) {
     <mat-card appearance="outlined" (click)="goToRecipe(recipe.id)" mat-ripple class="recipe">
       <mat-card-title class="title">{{recipe.name}}</mat-card-title>
       <mat-card-content>
@@ -24,7 +24,7 @@
         @if (recipe.requirements.length > 0) {
           <div class="ingredients">
             Zutaten:
-            @for (requirement of recipe.requirements; track requirement) {
+            @for (requirement of recipe.requirements; track requirement.ingredient.id) {
               <span class="ingredient">
               {{requirement.ingredient.name}}</span>
             }

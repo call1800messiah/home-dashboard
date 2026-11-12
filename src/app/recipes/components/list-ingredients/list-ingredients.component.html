@@ -11,7 +11,7 @@
     (filterChanged)="onFilterChanged($event)"
   ></app-filter>
 
-  @for (ingredient of ingredients$ | async; track ingredient) {
+  @for (ingredient of ingredients$ | async; track ingredient.id) {
     <mat-card
       appearance="outlined"
       class="ingredient"

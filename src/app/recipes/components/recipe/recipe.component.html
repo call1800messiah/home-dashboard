@@ -36,7 +36,7 @@
     }
     @if (recipe.children.length > 0) {
       <div class="children">
-        @for (child of recipe.children; track child) {
+        @for (child of recipe.children; track child.id) {
           <mat-card appearance="outlined" class="card recipe-child">
             <mat-card-content>
               <h2 class="title">{{child.name}}</h2>
