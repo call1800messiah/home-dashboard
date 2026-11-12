@@ -1,4 +1,4 @@
-@import './scss-variables';
+@use './scss-variables' as *;
 
 .container {
   margin: var(--content-spacing) auto var(--content-spacing);

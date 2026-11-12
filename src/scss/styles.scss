@@ -1,8 +1,10 @@
+@use 'sass:meta';
 @use '@angular/material' as mat;
 @include mat.all-component-typographies();
 @include mat.elevation-classes();
 @include mat.app-background();
 
-@import './css-variables.scss';
-@import './tags.scss';
-@import './common.scss';
+// load-css instead of @use keeps these after Material's styles in the output.
+@include meta.load-css('./css-variables');
+@include meta.load-css('./tags');
+@include meta.load-css('./common');
