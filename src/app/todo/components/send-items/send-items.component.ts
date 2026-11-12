@@ -10,6 +10,12 @@ import { TodoService } from '../../services/todo.service';
 import { SendSummaryComponent } from '../send-summary/send-summary.component';
 
 const MESSAGE_DURATION = 4000;
+/**
+ * Offline, Firestore applies the batch locally and keeps it queued: its promise only settles
+ * once the server confirms. After this long the button is released with an explanation.
+ */
+const OFFLINE_TIMEOUT = 10000;
+const PENDING = Symbol('pending');
 
 
 
@@ -69,8 +75,16 @@ export class SendItemsComponent implements OnInit {
 
     const targetId = this.targetId;
     this.sending = true;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     try {
-      const summary = await this.todoService.sendOpenItems(this.list.id, targetId, this.userID);
+      const summary = await Promise.race([
+        this.todoService.sendOpenItems(this.list.id, targetId, this.userID),
+        new Promise<typeof PENDING>((resolve) => timeout = setTimeout(() => resolve(PENDING), OFFLINE_TIMEOUT)),
+      ]);
+      if (summary === PENDING) {
+        this.snackBar.open('Keine Verbindung: wird gesendet, sobald du online bist', undefined, { duration: MESSAGE_DURATION });
+        return;
+      }
       const targets = await firstValueFrom(this.targets$);
       const data: SendSummaryData = { targetName: targets.find((target) => target.id === targetId)?.name ?? '', summary };
       this.dialog.open(SendSummaryComponent, { data, width: '500px' });
@@ -78,6 +92,7 @@ export class SendItemsComponent implements OnInit {
       console.error(error);
       this.snackBar.open('Senden fehlgeschlagen', undefined, { duration: MESSAGE_DURATION });
     } finally {
+      clearTimeout(timeout);
       this.sending = false;
     }
   }

@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom, of } from 'rxjs';
@@ -134,6 +134,18 @@ describe('SendItemsComponent', () => {
     component.send();
     expect(todoService.sendOpenItems).toHaveBeenCalledTimes(1);
   });
+
+  it('releases the button and explains when the send waits for a connection', fakeAsync(() => {
+    render();
+    component.selectTarget('shopping');
+    // Offline, Firestore keeps the batch queued: the promise neither resolves nor rejects.
+    todoService.sendOpenItems.and.returnValue(new Promise(() => undefined));
+    component.send();
+    tick(10000);
+    expect(snackBar.open).toHaveBeenCalledWith('Keine Verbindung: wird gesendet, sobald du online bist', undefined, jasmine.anything());
+    expect(component.sending).toBeFalse();
+    expect(dialog.open).not.toHaveBeenCalled();
+  }));
 
   it('shows "Senden fehlgeschlagen" on failure', async () => {
     render();
