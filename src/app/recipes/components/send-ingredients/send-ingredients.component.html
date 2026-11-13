@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Zutaten auf Liste</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="fill" class="servings">
+    <mat-label>Portionen</mat-label>
+    <input matInput type="number" step="1" min="1" [(ngModel)]="servings" />
+  </mat-form-field>
+
+  <div class="rows">
+    @for (row of rows; track row.key) {
+      <div class="row">
+        <mat-checkbox [checked]="checked.has(row.key)" (change)="toggle(row, $event.checked)">{{ row.name }}</mat-checkbox>
+        <span class="quantity">{{ rowQuantity(row, servings) ?? '' }}</span>
+      </div>
+    }
+  </div>
+
+  <app-target-list-picker
+    [lists]="targets$ | async"
+    storageKey="recipe-send-target"
+    label="Senden an"
+    (targetChange)="targetId = $event"
+  ></app-target-list-picker>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Abbrechen</button>
+  <button mat-flat-button color="accent" type="button" [disabled]="!canSend" (click)="send()">Senden</button>
+</mat-dialog-actions>
