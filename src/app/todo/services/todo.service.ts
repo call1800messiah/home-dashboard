@@ -140,6 +140,15 @@ export class TodoService {
     return false;
   }
 
+  /**
+   * Saves a list's name and keepDone without writing its items, so a rename can't drop items
+   * another device added meanwhile.
+   */
+  updateTodoListSettings(id: string, settings: Pick<TodoList, 'name' | 'keepDone'>, userId: string): Promise<boolean|string> {
+    const { name, keepDone } = settings;
+    return this.data.store({ name, keepDone, edited: new Date(), editedBy: userId }, TodoService.collectionLists, id);
+  }
+
   storeTodoList(list: Omit<TodoList, 'id'>, id?: string): Promise<boolean|string> {
     return this.data.store(TodoService.serializeTodoList(list), TodoService.collectionLists, id);
   }
