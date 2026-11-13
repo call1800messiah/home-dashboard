@@ -44,6 +44,11 @@ describe('ingredient rows', () => {
     expect(rowQuantity(row('Öl', 1 / 3, 'EL'), 4)).toBe('1,33 EL');
   });
 
+  it('trims the unit', () => {
+    const rows = buildIngredientRows(recipe([req('a', 'Mehl', 10, ' g ')]));
+    expect(rowQuantity(rows[0], 4)).toBe('40 g');
+  });
+
   it('gives no quantity for no amount or invalid servings', () => {
     expect(rowQuantity(row('Salz', 0, ''), 4)).toBeUndefined();
     expect(rowQuantity(row('Salz', 1, ''), 0)).toBeUndefined();

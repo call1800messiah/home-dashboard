@@ -162,6 +162,21 @@ describe('planSend in add mode', () => {
     const plan = planSend([exact('mehl', '500 g')], [item('t1', 'Mehl 200 g')], 'add');
     expect(plan.updates[0].content).toBe('Mehl 700 g');
   });
+  it('joins two units of the same ingredient in a new item', () => {
+    const plan = planSend([exact('Butter', '100 g'), exact('Butter', '1 EL')], [], 'add');
+    expect(plan.newItems).toEqual(['Butter 100 g + 1 EL']);
+    expect(plan.summary.added).toEqual(['Butter 100 g + 1 EL']);
+  });
+  it('joins a second unit to an item this send increased', () => {
+    const plan = planSend([exact('Butter', '100 g'), exact('Butter', '1 EL')], [item('t1', 'Butter 250 g')], 'add');
+    expect(plan.updates).toEqual([{ itemId: 't1', content: 'Butter 350 g + 1 EL', untick: false }]);
+    expect(plan.summary.quantityIncreased).toEqual(['Butter 250 g → 350 g', 'Butter 350 g → 350 g + 1 EL']);
+    expect(plan.summary.quantityChanged).toEqual([]);
+  });
+  it('keeps joining after a joined amount', () => {
+    const plan = planSend([exact('Butter', '100 g'), exact('Butter', '1 EL'), exact('Butter', '50 g')], [], 'add');
+    expect(plan.newItems).toEqual(['Butter 100 g + 1 EL + 50 g']);
+  });
 });
 
 describe('splitByName', () => {

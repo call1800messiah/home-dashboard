@@ -8,8 +8,8 @@ export function buildIngredientRows(recipe: Recipe): IngredientRow[] {
   const rows = new Map<string, IngredientRow>();
   for (const part of [recipe, ...recipe.children]) {
     for (const requirement of part.requirements) {
-      const unit = requirement.unit ?? '';
-      const key = `${requirement.ingredient.id}|${unit.trim().toLowerCase()}`;
+      const unit = (requirement.unit ?? '').trim();
+      const key = `${requirement.ingredient.id}|${unit.toLowerCase()}`;
       const existing = rows.get(key);
       if (existing) {
         existing.amount += requirement.amount;

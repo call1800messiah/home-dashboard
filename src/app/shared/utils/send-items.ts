@@ -164,6 +164,8 @@ interface WorkingItem {
   done: boolean;
   /** Index into newItems for items this send creates. */
   newIndex?: number;
+  /** Whether this send created or changed the item already. */
+  touched?: boolean;
 }
 
 interface Match extends SplitText {
@@ -174,7 +176,9 @@ interface Match extends SplitText {
 /**
  * Works out what sending `sources` (in source order) to a list holding `targetItems` (in list
  * order) does. Each source sees the effect of the ones before it. In `'add'` mode, an amount sent
- * to an open item with an addable quantity is added to that quantity instead of replacing it.
+ * to an open item with an addable quantity is added to that quantity instead of replacing it; one
+ * that cannot be added to an item this send already created or changed is joined with " + ", so
+ * the same ingredient in two units keeps both amounts.
  */
 export function planSend(sources: SendSource[], targetItems: SendTarget[], mode: AmountMode = 'replace'): SendPlan {
   const working: WorkingItem[] = targetItems.map(({ id, content, done }) => ({ id, content, done }));
@@ -188,7 +192,9 @@ export function planSend(sources: SendSource[], targetItems: SendTarget[], mode:
     const { name: sourceName, quantity } = source;
     const match = findMatch(source, working);
     if (!match) {
-      working.push({ id: `new-${newItems.length}`, content: source.content, done: false, newIndex: newItems.length });
+      working.push({
+        id: `new-${newItems.length}`, content: source.content, done: false, newIndex: newItems.length, touched: true,
+      });
       newItems.push(source.content);
       summary.added.push(source.content);
       continue;
@@ -200,7 +206,7 @@ export function planSend(sources: SendSource[], targetItems: SendTarget[], mode:
     }
 
     const sum = mode === 'add' && !target.done && quantity !== undefined && targetQuantity !== undefined
-      ? addAmounts(targetQuantity, quantity)
+      ? addAmounts(targetQuantity, quantity) ?? (target.touched ? `${targetQuantity} + ${quantity}` : undefined)
       : undefined;
     let content: string;
     if (sum !== undefined) {
@@ -229,6 +235,7 @@ export function planSend(sources: SendSource[], targetItems: SendTarget[], mode:
     }
     target.content = content;
     target.done = false;
+    target.touched = true;
   }
 
   return { updates: [...updates.values()], newItems, summary };

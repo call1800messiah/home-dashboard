@@ -8,6 +8,7 @@ export interface ParsedAmount {
 }
 
 const AMOUNT_PATTERN = /^(\d+(?:[.,]\d+)?)(\s*)([^\s\d.,-]+)?$/;
+const THOUSANDS_PATTERN = /^\d{1,3}(\.\d{3})+$/;
 
 /** Factor that converts one unit into another (both lowercase). */
 const UNIT_FACTORS: Record<string, Record<string, number>> = {
@@ -27,6 +28,10 @@ export function parseAmount(quantity: string): ParsedAmount | undefined {
     return undefined;
   }
   const [, number, space, unit = ''] = match;
+  // "1.000" is a German thousands separator, not 1; refuse it rather than misread it.
+  if (THOUSANDS_PATTERN.test(number)) {
+    return undefined;
+  }
   return {
     value: Number(number.replace(',', '.')),
     unit,

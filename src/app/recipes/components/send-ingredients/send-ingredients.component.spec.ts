@@ -134,6 +134,14 @@ describe('SendIngredientsComponent', () => {
     expect(sendButton().disabled).toBeTrue();
   });
 
+  it('enables Senden for a remembered target', () => {
+    localStorage.setItem(STORAGE_KEY, 'dst');
+    fixture = TestBed.createComponent(SendIngredientsComponent);
+    component = fixture.componentInstance;
+    render();
+    expect(sendButton().disabled).toBeFalse();
+  });
+
   it('sends only checked ingredients in add mode', async () => {
     todoService.sendItems.and.resolveTo(summary);
     chooseTarget();
