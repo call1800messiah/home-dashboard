@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>An {{data.targetName}} gesendet</h2>
+<mat-dialog-content class="send-summary">
+  @for (group of groups; track group.key) {
+    <section class="group" [class.close-matches]="group.key === 'closeMatches'">
+      <div class="group-title">{{group.title}} ({{group.count}})</div>
+      <div class="entries">{{group.entries}}</div>
+    </section>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>OK</button>
+</mat-dialog-actions>

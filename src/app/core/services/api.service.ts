@@ -4,6 +4,14 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Observable } from 'rxjs';
 import type firebase from 'firebase/compat/app';
 
+/** One document write in a batch: set `data`, merged into the existing document or replacing it. */
+export interface BatchSet {
+  collectionID: string;
+  documentID: string;
+  data: object;
+  merge: boolean;
+}
+
 
 
 @Injectable({
@@ -19,6 +27,21 @@ export class ApiService {
 
   addDocumentToCollection(document: any, collectionID: string): Promise<DocumentReference<unknown>> {
     return this.useFirestore((afs) => afs.collection(collectionID).add(document));
+  }
+
+  /** Writes all operations together: either all of them are applied or none. */
+  batchWrite(operations: BatchSet[]): Promise<void> {
+    return this.useFirestore((afs) => {
+      const batch = afs.firestore.batch();
+      operations.forEach(({ collectionID, documentID, data, merge }) => {
+        batch.set(afs.firestore.collection(collectionID).doc(documentID), data, { merge });
+      });
+      return batch.commit();
+    });
+  }
+
+  createId(): string {
+    return this.useFirestore((afs) => afs.createId());
   }
 
   deleteDocumentFromCollection(documentId: string, collectionID: string): Promise<void> {

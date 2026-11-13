@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -43,6 +44,7 @@ import { FocusOnInitDirective } from './directives/focus-on-init.directive';
     MatInputModule,
     MatRippleModule,
     MatSelectModule,
+    MatSnackBarModule,
     MatTableModule,
     ReactiveFormsModule,
   ],
@@ -64,6 +66,7 @@ import { FocusOnInitDirective } from './directives/focus-on-init.directive';
     MatInputModule,
     MatRippleModule,
     MatSelectModule,
+    MatSnackBarModule,
     MatTableModule,
     ReactiveFormsModule,
     SelectOnFocusDirective,

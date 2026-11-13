@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { deleteField } from '@angular/fire/firestore';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import type { TodoItem } from '../models/todo-item';
 import type { TodoItemDbo } from '../models/todo-item.dbo';
 import type { TodoList } from '../models/todo-list';
 import type { TodoListDbo } from '../models/todo-list.dbo';
-import { ApiService } from '../../core/services/api.service';
+import { ApiService, BatchSet } from '../../core/services/api.service';
 import { DataService } from '../../core/services/data.service';
 import { UtilService } from '../../core/services/util.service';
+import { planSend, SendSummary } from './send-items';
 
 
 
@@ -57,6 +58,59 @@ export class TodoService {
     }
 
     return this.todoLists$.asObservable();
+  }
+
+  /**
+   * Sends the open items of one list to another in a single batch: matching items there are
+   * unticked or get the new quantity, the rest are added at the top. Rejects if a list is
+   * missing or the write fails, in which case nothing was changed.
+   */
+  async sendOpenItems(sourceListId: string, targetListId: string, userId: string): Promise<SendSummary> {
+    const lists = await firstValueFrom(this.getTodoLists());
+    const source = lists.find((list) => list.id === sourceListId);
+    const target = lists.find((list) => list.id === targetListId);
+    if (!source || !target) {
+      throw new Error(`Todo list ${source ? targetListId : sourceListId} not found`);
+    }
+
+    // Items whose document was deleted come through as undefined.
+    const targetItems = target.items.filter(Boolean);
+    const plan = planSend(source.items.filter((item) => item && !item.done), targetItems);
+    if (plan.updates.length === 0 && plan.newItems.length === 0) {
+      return plan.summary;
+    }
+
+    const now = new Date();
+    const updates: BatchSet[] = plan.updates.map(({ itemId, content, untick }) => ({
+      collectionID: TodoService.collectionItems,
+      documentID: itemId,
+      data: {
+        content,
+        edited: now,
+        editedBy: userId,
+        ...(untick ? { done: false, doneBy: deleteField(), markedDone: deleteField() } : {}),
+      },
+      merge: true,
+    }));
+    const newItems: BatchSet[] = plan.newItems.map((content) => ({
+      collectionID: TodoService.collectionItems,
+      documentID: this.api.createId(),
+      data: { author: userId, content, created: now, done: false, edited: now, editedBy: userId },
+      merge: false,
+    }));
+    const list: BatchSet = {
+      collectionID: TodoService.collectionLists,
+      documentID: target.id,
+      data: {
+        items: [...newItems.map((item) => item.documentID), ...targetItems.map((item) => item.id)],
+        edited: now,
+        editedBy: userId,
+      },
+      merge: true,
+    };
+
+    await this.api.batchWrite([...updates, ...newItems, list]);
+    return plan.summary;
   }
 
   storeEditedTodoItem(item: Omit<TodoItem, 'id'>, itemId: string): Promise<boolean | string> {

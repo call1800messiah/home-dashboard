@@ -1,3 +1,21 @@
+// Title on the left, sort and edit buttons on the right (layout B in the design).
+.list-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  h1 {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+  }
+}
+
+.send-row {
+  display: block;
+  margin: 16px 0;
+}
+
 .finished-items {
   margin-top: 20px;
 }

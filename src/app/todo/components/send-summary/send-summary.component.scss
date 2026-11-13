@@ -1,0 +1,27 @@
+.send-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.group-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #69f0ae;
+}
+
+.close-matches {
+  background: #4d4636;
+  border-radius: 12px;
+  padding: 12px 14px;
+
+  .group-title {
+    color: #ffd180;
+  }
+}

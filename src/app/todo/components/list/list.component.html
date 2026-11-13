@@ -1,14 +1,19 @@
 @if (list) {
   <div class="todo-list container medium">
-    <h1>{{list.name}}</h1>
-    <div class="container-top-controls">
-      <button mat-fab type="button" color="{{allowSorting ? 'accent' : undefined }}" (click)="toggleSorting()" title="Sortieren">
-        <mat-icon>drag_indicator</mat-icon>
-      </button>
-      <button mat-fab type="button" color="accent" (click)="editList()" title="Bearbeiten">
-        <mat-icon>edit</mat-icon>
-      </button>
+    <div class="list-header">
+      <h1>{{list.name}}</h1>
+      <div class="container-top-controls">
+        <button mat-fab type="button" color="{{allowSorting ? 'accent' : undefined }}" (click)="toggleSorting()" title="Sortieren">
+          <mat-icon>drag_indicator</mat-icon>
+        </button>
+        <button mat-fab type="button" color="accent" (click)="editList()" title="Bearbeiten">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
     </div>
+    @if (!allowSorting) {
+      <app-send-items class="send-row" [list]="list" [userID]="userID"></app-send-items>
+    }
     <mat-card appearance="outlined">
       <mat-card-content>
         @if (!allowSorting) {
