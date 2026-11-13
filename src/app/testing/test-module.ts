@@ -16,7 +16,6 @@ import { ApiService } from '../core/services/api.service';
  */
 const stubApi: Partial<Record<keyof ApiService, unknown>> = {
   addDocumentToCollection: () => Promise.resolve({ id: 'test-id' }),
-  batchWrite: () => Promise.resolve(),
   createId: () => 'test-id',
   deleteDocumentFromCollection: () => Promise.resolve(),
   getAuthState: () => of(null),
@@ -24,6 +23,8 @@ const stubApi: Partial<Record<keyof ApiService, unknown>> = {
   getItemFromCollection: () => of(undefined),
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
+  removeFromArray: () => Promise.resolve(),
+  runTransaction: () => Promise.reject(new Error('No database in tests')),
   updateDocumentInCollection: () => Promise.resolve(),
 };
 

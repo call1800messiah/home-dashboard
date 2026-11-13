@@ -64,8 +64,12 @@ describe('ApiService outside an injection context', () => {
     expect(() => service.getItemFromCollection('items/id')).not.toThrow();
   });
 
-  it('can start a batch write', () => {
-    expect(() => service.batchWrite([{ collectionID: 'items', documentID: 'id', data: { a: 1 }, merge: true }])).not.toThrow();
+  it('can remove a value from an array field', () => {
+    expect(() => service.removeFromArray('id', 'items', 'tags', 'a')).not.toThrow();
+  });
+
+  it('can start a transaction', () => {
+    expect(() => service.runTransaction(async () => undefined)).not.toThrow();
   });
 
   it('creates document ids', () => {
