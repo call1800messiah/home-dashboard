@@ -1,14 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom, of } from 'rxjs';
 
-import { OFFLINE_MESSAGE, SendItemsComponent } from './send-items.component';
-import { SendSummaryComponent } from '../send-summary/send-summary.component';
+import { SendItemsComponent } from './send-items.component';
+import { SEND_FAILED_MESSAGE, SEND_OFFLINE_MESSAGE } from '../../../shared/utils/send-messages';
+import { SendSummaryComponent } from '../../../shared/components/send-summary/send-summary.component';
+import { TargetListPickerComponent } from '../../../shared/components/target-list-picker/target-list-picker.component';
 import { TodoModule } from '../../todo.module';
 import { TodoService } from '../../services/todo.service';
 import { testModule } from '../../../testing/test-module';
-import type { SendSummary } from '../../services/send-items';
+import type { SendSummary } from '../../../shared/utils/send-items';
 import type { TodoItem } from '../../models/todo-item';
 import type { TodoList } from '../../models/todo-list';
 
@@ -30,7 +33,7 @@ describe('SendItemsComponent', () => {
   let snackBar: jasmine.SpyObj<MatSnackBar>;
 
   const source = list('src', 'Wöchentlich', [item('s1', false)]);
-  const summary: SendSummary = { closeMatches: [], reopened: [], quantityChanged: [], added: ['s1'], alreadyOpen: [] };
+  const summary: SendSummary = { closeMatches: [], reopened: [], quantityIncreased: [], quantityChanged: [], added: ['s1'], alreadyOpen: [] };
 
   beforeEach(async () => {
     localStorage.removeItem(STORAGE_KEY);
@@ -72,28 +75,15 @@ describe('SendItemsComponent', () => {
 
   it('remembers the target per source list', () => {
     render();
-    component.selectTarget('shopping');
+    fixture.debugElement.query(By.directive(TargetListPickerComponent)).componentInstance.select('shopping');
     expect(localStorage.getItem(STORAGE_KEY)).toBe('shopping');
-  });
-
-  it('preselects the remembered target', async () => {
-    localStorage.setItem(STORAGE_KEY, 'shopping');
-    render();
-    await fixture.whenStable();
     expect(component.targetId).toBe('shopping');
-  });
-
-  it('ignores a remembered target that no longer exists', async () => {
-    localStorage.setItem(STORAGE_KEY, 'deleted');
-    render();
-    await fixture.whenStable();
-    expect(component.targetId).toBeNull();
   });
 
   it('disables Senden without a target', () => {
     render();
     expect(sendButton().disabled).toBeTrue();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     render();
     expect(sendButton().disabled).toBeFalse();
   });
@@ -101,7 +91,7 @@ describe('SendItemsComponent', () => {
   it('disables Senden while the user is unknown', () => {
     fixture.componentRef.setInput('userID', undefined);
     render();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     render();
     expect(sendButton().disabled).toBeTrue();
   });
@@ -109,7 +99,7 @@ describe('SendItemsComponent', () => {
   it('shows "Keine offenen Einträge" when nothing is open', async () => {
     fixture.componentRef.setInput('list', list('src', 'Wöchentlich', [item('s1', true)]));
     render();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     await component.send();
     expect(snackBar.open).toHaveBeenCalledWith('Keine offenen Einträge', undefined, jasmine.anything());
     expect(todoService.sendOpenItems).not.toHaveBeenCalled();
@@ -117,7 +107,7 @@ describe('SendItemsComponent', () => {
 
   it('sends and opens the summary', async () => {
     render();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     todoService.sendOpenItems.and.resolveTo(summary);
     await component.send();
     expect(todoService.sendOpenItems).toHaveBeenCalledOnceWith('src', 'shopping', 'u1');
@@ -128,7 +118,7 @@ describe('SendItemsComponent', () => {
 
   it('ignores a second tap while sending', () => {
     render();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     todoService.sendOpenItems.and.returnValue(new Promise(() => undefined));
     component.send();
     component.send();
@@ -137,29 +127,29 @@ describe('SendItemsComponent', () => {
 
   it('does not try to send while offline and explains why', async () => {
     render();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     spyOnProperty(navigator, 'onLine').and.returnValue(false);
     await component.send();
     expect(todoService.sendOpenItems).not.toHaveBeenCalled();
-    expect(snackBar.open).toHaveBeenCalledWith(OFFLINE_MESSAGE, undefined, jasmine.anything());
+    expect(snackBar.open).toHaveBeenCalledWith(SEND_OFFLINE_MESSAGE, undefined, jasmine.anything());
   });
 
   it('explains when the connection drops during the send', async () => {
     render();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     todoService.sendOpenItems.and.rejectWith(Object.assign(new Error('client is offline'), { code: 'unavailable' }));
     await component.send();
-    expect(snackBar.open).toHaveBeenCalledWith(OFFLINE_MESSAGE, undefined, jasmine.anything());
+    expect(snackBar.open).toHaveBeenCalledWith(SEND_OFFLINE_MESSAGE, undefined, jasmine.anything());
     expect(component.sending).toBeFalse();
     expect(dialog.open).not.toHaveBeenCalled();
   });
 
   it('shows "Senden fehlgeschlagen" on failure', async () => {
     render();
-    component.selectTarget('shopping');
+    component.targetId = 'shopping';
     todoService.sendOpenItems.and.rejectWith(new Error('offline'));
     await component.send();
-    expect(snackBar.open).toHaveBeenCalledWith('Senden fehlgeschlagen', undefined, jasmine.anything());
+    expect(snackBar.open).toHaveBeenCalledWith(SEND_FAILED_MESSAGE, undefined, jasmine.anything());
     expect(dialog.open).not.toHaveBeenCalled();
   });
 });

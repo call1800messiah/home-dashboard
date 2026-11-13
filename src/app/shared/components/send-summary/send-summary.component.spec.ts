@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { SendSummaryComponent } from './send-summary.component';
-import { TodoModule } from '../../todo.module';
+import { SharedModule } from '../../shared.module';
 import { testModule } from '../../../testing/test-module';
 import type { SendSummaryData } from '../../models/send-summary-data';
 
@@ -14,6 +14,7 @@ describe('SendSummaryComponent', () => {
     summary: {
       closeMatches: ['Tomate → Tomaten'],
       reopened: ['Milch', 'Brot'],
+      quantityIncreased: ['Mehl 200 g → 700 g'],
       quantityChanged: [],
       added: ['Joghurt'],
       alreadyOpen: [],
@@ -21,7 +22,7 @@ describe('SendSummaryComponent', () => {
   };
 
   beforeEach(async () => {
-    const module = testModule(TodoModule);
+    const module = testModule(SharedModule);
     await TestBed.configureTestingModule({
       ...module,
       providers: [...module.providers!, { provide: MAT_DIALOG_DATA, useValue: data }],
@@ -36,7 +37,10 @@ describe('SendSummaryComponent', () => {
     expect(text).toContain('An Einkaufsliste gesendet');
     const headings = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.group-title'))
       .map((element) => element.textContent?.trim());
-    expect(headings).toEqual(['Ähnlicher Name verwendet (1)', 'Wieder offen (2)', 'Neu hinzugefügt (1)']);
+    expect(headings).toEqual([
+      'Ähnlicher Name verwendet (1)', 'Wieder offen (2)', 'Menge erhöht (1)', 'Neu hinzugefügt (1)',
+    ]);
+    expect(text).toContain('Mehl 200 g → 700 g');
     expect(text).toContain('Tomate → Tomaten');
     expect(text).toContain('Milch, Brot');
     expect(text).toContain('Joghurt');

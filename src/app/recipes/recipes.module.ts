@@ -10,6 +10,7 @@ import { EditRecipeComponent } from './components/edit-recipe/edit-recipe.compon
 import { ListIngredientsComponent } from './components/list-ingredients/list-ingredients.component';
 import { EditIngredientComponent } from './components/edit-ingredient/edit-ingredient.component';
 import { ServingCountComponent } from './components/serving-count/serving-count.component';
+import { SendIngredientsComponent } from './components/send-ingredients/send-ingredients.component';
 
 
 
@@ -23,6 +24,7 @@ import { ServingCountComponent } from './components/serving-count/serving-count.
     ListIngredientsComponent,
     EditIngredientComponent,
     ServingCountComponent,
+    SendIngredientsComponent,
   ],
   imports: [
     SharedModule,

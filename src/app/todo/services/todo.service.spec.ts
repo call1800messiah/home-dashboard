@@ -142,6 +142,61 @@ describe('TodoService.sendOpenItems', () => {
   });
 });
 
+describe('TodoService.sendItems', () => {
+  let service: TodoService;
+  let committed: DocumentWrite[][];
+  let server: Documents;
+
+  beforeEach(() => {
+    let nextId = 0;
+    committed = [];
+    server = {
+      todo: { dst: { name: 'Einkaufsliste', items: ['t1', 't2'], keepDone: false } },
+      todoItems: {
+        t1: { content: 'Milch 1l', done: true, doneBy: 'u2', markedDone: new Date(0) },
+        t2: { content: 'Brot', done: false },
+      },
+    };
+    const api = {
+      getDataFromCollection: () => of([]),
+      createId: () => `new${++nextId}`,
+      runTransaction: (work: any) => fakeTransaction(server, committed)(work),
+    };
+    const module = testModule();
+    TestBed.configureTestingModule({ ...module, providers: [...module.providers!, { provide: ApiService, useValue: api }] });
+    service = TestBed.inject(TodoService);
+  });
+
+  const written = (): DocumentWrite[] => committed[committed.length - 1];
+
+  it('adds amounts in add mode', async () => {
+    server['todoItems']['t2'] = { content: 'Brot 1', done: false };
+    const summary = await service.sendItems([{ content: 'Brot 2', name: 'Brot', quantity: '2', exactName: true }], 'dst', 'u1', 'add');
+    expect(written()).toContain(jasmine.objectContaining({
+      collectionID: 'todoItems', documentID: 't2',
+      data: jasmine.objectContaining({ content: 'Brot 3' }),
+    }));
+    expect(summary.quantityIncreased).toEqual(['Brot 1 → 3']);
+  });
+
+  it('creates new items from the source content', async () => {
+    await service.sendItems([{ content: 'Zucker', name: 'Zucker', exactName: true }], 'dst', 'u1');
+    expect(written()).toContain(jasmine.objectContaining({
+      collectionID: 'todoItems', documentID: 'new1', merge: false,
+      data: jasmine.objectContaining({ content: 'Zucker' }),
+    }));
+    expect(written()).toContain(jasmine.objectContaining({
+      collectionID: 'todo', documentID: 'dst',
+      data: jasmine.objectContaining({ items: ['new1', 't1', 't2'] }),
+    }));
+  });
+
+  it('rejects when the target list does not exist', async () => {
+    await expectAsync(service.sendItems([{ content: 'Zucker', name: 'Zucker', exactName: true }], 'missing', 'u1')).toBeRejected();
+    expect(committed).toEqual([]);
+  });
+});
+
 describe('TodoService.updateTodoListSettings', () => {
   let service: TodoService;
   let api: jasmine.SpyObj<Pick<ApiService, 'updateDocumentInCollection'>>;

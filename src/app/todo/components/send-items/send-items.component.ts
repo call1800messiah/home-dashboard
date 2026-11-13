@@ -5,13 +5,12 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import type { TodoList } from '../../models/todo-list';
-import type { SendSummaryData } from '../../models/send-summary-data';
+import type { SendSummaryData } from '../../../shared/models/send-summary-data';
 import { TodoService } from '../../services/todo.service';
-import { SendSummaryComponent } from '../send-summary/send-summary.component';
+import { SEND_FAILED_MESSAGE, SEND_OFFLINE_MESSAGE } from '../../../shared/utils/send-messages';
+import { SendSummaryComponent } from '../../../shared/components/send-summary/send-summary.component';
 
 const MESSAGE_DURATION = 4000;
-/** Sending reads the target list from the server, so it only works online. */
-export const OFFLINE_MESSAGE = 'Keine Verbindung: Senden geht nur online';
 
 
 
@@ -40,24 +39,6 @@ export class SendItemsComponent implements OnInit {
     this.targets$ = this.todoService.getTodoLists().pipe(
       map((lists) => lists.filter((list) => list.id !== this.list.id)),
     );
-
-    const stored = this.readStoredTarget();
-    if (stored) {
-      firstValueFrom(this.targets$).then((targets) => {
-        if (targets.some((target) => target.id === stored)) {
-          this.targetId = stored;
-        }
-      });
-    }
-  }
-
-  selectTarget(id: string): void {
-    this.targetId = id;
-    try {
-      localStorage.setItem(this.storageKey, id);
-    } catch {
-      // Storage can be unavailable (private mode); the choice then lasts for this visit only.
-    }
   }
 
   async send(): Promise<void> {
@@ -70,7 +51,7 @@ export class SendItemsComponent implements OnInit {
     }
 
     if (!navigator.onLine) {
-      this.snackBar.open(OFFLINE_MESSAGE, undefined, { duration: MESSAGE_DURATION });
+      this.snackBar.open(SEND_OFFLINE_MESSAGE, undefined, { duration: MESSAGE_DURATION });
       return;
     }
 
@@ -84,21 +65,9 @@ export class SendItemsComponent implements OnInit {
     } catch (error) {
       console.error(error);
       const offline = (error as { code?: string } | null)?.code === 'unavailable';
-      this.snackBar.open(offline ? OFFLINE_MESSAGE : 'Senden fehlgeschlagen', undefined, { duration: MESSAGE_DURATION });
+      this.snackBar.open(offline ? SEND_OFFLINE_MESSAGE : SEND_FAILED_MESSAGE, undefined, { duration: MESSAGE_DURATION });
     } finally {
       this.sending = false;
-    }
-  }
-
-  private get storageKey(): string {
-    return `todo-send-target-${this.list.id}`;
-  }
-
-  private readStoredTarget(): string | null {
-    try {
-      return localStorage.getItem(this.storageKey);
-    } catch {
-      return null;
     }
   }
 }

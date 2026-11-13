@@ -2,7 +2,7 @@ import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import type { SendSummaryData } from '../../models/send-summary-data';
-import type { SendSummary } from '../../services/send-items';
+import type { SendSummary } from '../../utils/send-items';
 
 interface SummaryGroup {
   key: keyof SendSummary;
@@ -14,6 +14,7 @@ interface SummaryGroup {
 const GROUP_TITLES: [keyof SendSummary, string][] = [
   ['closeMatches', 'Ähnlicher Name verwendet'],
   ['reopened', 'Wieder offen'],
+  ['quantityIncreased', 'Menge erhöht'],
   ['quantityChanged', 'Menge geändert'],
   ['added', 'Neu hinzugefügt'],
   ['alreadyOpen', 'War schon offen'],

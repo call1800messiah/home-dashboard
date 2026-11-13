@@ -16,6 +16,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { SendSummaryComponent } from './components/send-summary/send-summary.component';
+import { TargetListPickerComponent } from './components/target-list-picker/target-list-picker.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { SelectOnFocusDirective } from './directives/select-on-focus.directive';
 import { FocusOnInitDirective } from './directives/focus-on-init.directive';
@@ -28,6 +30,8 @@ import { FocusOnInitDirective } from './directives/focus-on-init.directive';
     FilterComponent,
     FocusOnInitDirective,
     SelectOnFocusDirective,
+    SendSummaryComponent,
+    TargetListPickerComponent,
   ],
   imports: [
     CommonModule,
@@ -70,6 +74,8 @@ import { FocusOnInitDirective } from './directives/focus-on-init.directive';
     MatTableModule,
     ReactiveFormsModule,
     SelectOnFocusDirective,
+    SendSummaryComponent,
+    TargetListPickerComponent,
   ]
 })
 export class SharedModule { }
