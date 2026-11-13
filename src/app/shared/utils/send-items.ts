@@ -1,9 +1,10 @@
 /**
- * Pure logic for sending a todo list's open items to another list.
- * See docs/superpowers/specs/2026-11-03-copy-items-between-lists-design.md.
+ * Pure logic for sending items (a todo list's open items, or a recipe's ingredients) to a todo list.
+ * See docs/superpowers/specs/2026-11-03-copy-items-between-lists-design.md and
+ * docs/superpowers/specs/2026-11-13-recipe-ingredients-to-list-design.md.
  */
 
-import type { TodoItem } from '../../todo/models/todo-item';
+import { addAmounts } from './amounts';
 
 export interface SplitText {
   name: string;
@@ -33,6 +34,30 @@ export function splitQuantity(text: string): SplitText {
     name: words.slice(0, start).join(' ').replace(/,$/, ''),
     quantity: words.slice(start).join(' '),
   };
+}
+
+/**
+ * Splits `text` into `name` (as written in `text`) and the quantity after it, when `text` starts
+ * with the words of `name` and nothing but a quantity follows. Undefined otherwise, so
+ * "Mehl Type 405" is not "Mehl" with an amount.
+ */
+export function splitByName(text: string, name: string): SplitText | undefined {
+  const words = text.trim().split(/\s+/).filter((word) => word.length > 0);
+  const nameLength = normalizeName(name).split(' ').length;
+  const head = words.slice(0, nameLength).join(' ');
+  if (words.length < nameLength || normalizeName(head) !== normalizeName(name)) {
+    return undefined;
+  }
+
+  const rest = words.slice(nameLength);
+  if (rest.length === 0) {
+    return { name: head };
+  }
+  const startsWithDigit = (word: string | undefined) => /^\d/.test(word ?? '');
+  if (startsWithDigit(rest[0]) || (QUANTITY_QUALIFIERS.includes(rest[0].toLowerCase()) && startsWithDigit(rest[1]))) {
+    return { name: head, quantity: rest.join(' ') };
+  }
+  return undefined;
 }
 
 export function normalizeName(name: string): string {
@@ -85,6 +110,8 @@ export interface SendSummary {
   closeMatches: string[];
   /** Target name, or a quantity change string when the quantity changed too. */
   reopened: string[];
+  /** "Mehl 200 g → 700 g": open items whose quantity the sent amount was added to. */
+  quantityIncreased: string[];
   /** Quantity change strings for items that were already open. */
   quantityChanged: string[];
   /** Full text of each new item. */
@@ -107,6 +134,30 @@ export interface SendPlan {
   summary: SendSummary;
 }
 
+/** The fields of a target list item the planner reads. */
+export interface SendTarget {
+  id: string;
+  content: string;
+  done: boolean;
+}
+
+/** One item to send. `content` is the text written for a new item. */
+export interface SendSource {
+  content: string;
+  name: string;
+  quantity?: string;
+  /** Match only targets whose text starts with exactly `name`, even if it holds a number. */
+  exactName: boolean;
+}
+
+/** A source taken from an item's text, split into name and quantity the usual way. */
+export function sourceFromText(text: string): SendSource {
+  return { content: text, ...splitQuantity(text), exactName: false };
+}
+
+/** Whether a sent quantity replaces the target's quantity or is added to it where possible. */
+export type AmountMode = 'replace' | 'add';
+
 interface WorkingItem {
   id: string;
   content: string;
@@ -115,19 +166,27 @@ interface WorkingItem {
   newIndex?: number;
 }
 
+interface Match extends SplitText {
+  item: WorkingItem;
+  close: boolean;
+}
+
 /**
- * Works out what sending `sourceItems` (the open items, in source order) to a list holding
- * `targetItems` (in list order) does. Each source item sees the effect of the ones before it.
+ * Works out what sending `sources` (in source order) to a list holding `targetItems` (in list
+ * order) does. Each source sees the effect of the ones before it. In `'add'` mode, an amount sent
+ * to an open item with an addable quantity is added to that quantity instead of replacing it.
  */
-export function planSend(sourceItems: TodoItem[], targetItems: TodoItem[]): SendPlan {
+export function planSend(sources: SendSource[], targetItems: SendTarget[], mode: AmountMode = 'replace'): SendPlan {
   const working: WorkingItem[] = targetItems.map(({ id, content, done }) => ({ id, content, done }));
   const updates = new Map<string, SendUpdate>();
   const newItems: string[] = [];
-  const summary: SendSummary = { closeMatches: [], reopened: [], quantityChanged: [], added: [], alreadyOpen: [] };
+  const summary: SendSummary = {
+    closeMatches: [], reopened: [], quantityIncreased: [], quantityChanged: [], added: [], alreadyOpen: [],
+  };
 
-  for (const source of sourceItems) {
-    const { name: sourceName, quantity } = splitQuantity(source.content);
-    const match = findMatch(normalizeName(sourceName), working);
+  for (const source of sources) {
+    const { name: sourceName, quantity } = source;
+    const match = findMatch(source, working);
     if (!match) {
       working.push({ id: `new-${newItems.length}`, content: source.content, done: false, newIndex: newItems.length });
       newItems.push(source.content);
@@ -135,22 +194,30 @@ export function planSend(sourceItems: TodoItem[], targetItems: TodoItem[]): Send
       continue;
     }
 
-    const target = match.item;
-    const { name: targetName, quantity: targetQuantity } = splitQuantity(target.content);
+    const { item: target, name: targetName, quantity: targetQuantity } = match;
     if (match.close) {
       summary.closeMatches.push(`${sourceName} → ${targetName}`);
     }
 
-    const quantityChanged = quantity !== undefined && quantity !== targetQuantity;
-    const content = quantityChanged ? `${targetName} ${quantity}` : target.content;
-    const change = targetQuantity ? `${targetName} ${targetQuantity} → ${quantity}` : `${targetName} → ${quantity}`;
-    if (target.done) {
-      summary.reopened.push(quantityChanged ? change : targetName);
-    } else if (quantityChanged) {
-      summary.quantityChanged.push(change);
+    const sum = mode === 'add' && !target.done && quantity !== undefined && targetQuantity !== undefined
+      ? addAmounts(targetQuantity, quantity)
+      : undefined;
+    let content: string;
+    if (sum !== undefined) {
+      content = `${targetName} ${sum}`;
+      summary.quantityIncreased.push(`${targetName} ${targetQuantity} → ${sum}`);
     } else {
-      summary.alreadyOpen.push(targetName);
-      continue;
+      const quantityChanged = quantity !== undefined && quantity !== targetQuantity;
+      content = quantityChanged ? `${targetName} ${quantity}` : target.content;
+      const change = targetQuantity ? `${targetName} ${targetQuantity} → ${quantity}` : `${targetName} → ${quantity}`;
+      if (target.done) {
+        summary.reopened.push(quantityChanged ? change : targetName);
+      } else if (quantityChanged) {
+        summary.quantityChanged.push(change);
+      } else {
+        summary.alreadyOpen.push(targetName);
+        continue;
+      }
     }
 
     if (target.newIndex !== undefined) {
@@ -167,15 +234,29 @@ export function planSend(sourceItems: TodoItem[], targetItems: TodoItem[]): Send
   return { updates: [...updates.values()], newItems, summary };
 }
 
-/** Same name first, then a close name; among several, an open item, else the first. */
-function findMatch(name: string, items: WorkingItem[]): { item: WorkingItem; close: boolean } | undefined {
-  const named = items.map((item) => ({ item, name: normalizeName(splitQuantity(item.content).name) }));
-  const pick = (candidates: typeof named) => (candidates.find(({ item }) => !item.done) ?? candidates[0])?.item;
+/**
+ * For an exact-name source, a target starting with exactly that name; then the same name, then
+ * a close name. Among several, an open item, else the first. Carries the target's split.
+ */
+function findMatch(source: SendSource, items: WorkingItem[]): Match | undefined {
+  const pick = <T extends { item: WorkingItem }>(candidates: T[]) => candidates.find(({ item }) => !item.done) ?? candidates[0];
 
-  const same = pick(named.filter((candidate) => candidate.name === name));
-  if (same) {
-    return { item: same, close: false };
+  if (source.exactName) {
+    const exact = pick(items.flatMap((item) => {
+      const split = splitByName(item.content, source.name);
+      return split ? [{ item, ...split }] : [];
+    }));
+    if (exact) {
+      return { ...exact, close: false };
+    }
   }
-  const close = pick(named.filter((candidate) => isCloseName(name, candidate.name)));
-  return close ? { item: close, close: true } : undefined;
+
+  const name = normalizeName(source.name);
+  const named = items.map((item) => ({ item, ...splitQuantity(item.content) }));
+  const same = pick(named.filter((candidate) => normalizeName(candidate.name) === name));
+  if (same) {
+    return { ...same, close: false };
+  }
+  const close = pick(named.filter((candidate) => isCloseName(name, normalizeName(candidate.name))));
+  return close ? { ...close, close: true } : undefined;
 }

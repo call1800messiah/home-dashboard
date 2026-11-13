@@ -31,7 +31,7 @@ describe('SendItemsComponent', () => {
   let snackBar: jasmine.SpyObj<MatSnackBar>;
 
   const source = list('src', 'Wöchentlich', [item('s1', false)]);
-  const summary: SendSummary = { closeMatches: [], reopened: [], quantityChanged: [], added: ['s1'], alreadyOpen: [] };
+  const summary: SendSummary = { closeMatches: [], reopened: [], quantityIncreased: [], quantityChanged: [], added: ['s1'], alreadyOpen: [] };
 
   beforeEach(async () => {
     localStorage.removeItem(STORAGE_KEY);

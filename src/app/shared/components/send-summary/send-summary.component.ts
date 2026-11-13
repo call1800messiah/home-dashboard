@@ -14,6 +14,7 @@ interface SummaryGroup {
 const GROUP_TITLES: [keyof SendSummary, string][] = [
   ['closeMatches', 'Ähnlicher Name verwendet'],
   ['reopened', 'Wieder offen'],
+  ['quantityIncreased', 'Menge erhöht'],
   ['quantityChanged', 'Menge geändert'],
   ['added', 'Neu hinzugefügt'],
   ['alreadyOpen', 'War schon offen'],
