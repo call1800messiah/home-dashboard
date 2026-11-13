@@ -18,7 +18,15 @@
               {{recipe.summary}}
             </div>
           }
-          <app-serving-count [servings]="servings" (servingsChanged)="onServingsChanged($event)"></app-serving-count>
+          <div class="servings-row">
+            <app-serving-count [servings]="servings" (servingsChanged)="onServingsChanged($event)"></app-serving-count>
+            @if (hasIngredients) {
+              <button mat-stroked-button type="button" class="btn-send" [disabled]="!userID" (click)="sendIngredients()">
+                <mat-icon>add_shopping_cart</mat-icon>
+                Auf Liste
+              </button>
+            }
+          </div>
           @if (recipe.requirements.length > 0) {
             <div class="ingredient-requirements">
               <h2>Zutaten</h2>
