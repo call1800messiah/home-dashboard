@@ -57,18 +57,18 @@ export class EditTodoListComponent implements OnInit, OnDestroy {
   }
 
   save(): void {
-    const list: TodoList = {
-      ...this.listForm.value,
-      edited: new Date(),
-      editedBy: this.userID,
-      items: this.data?.list?.items ?? [],
-    };
-    if (!this.data?.list?.id) {
-      list.author = this.userID;
-      list.created = list.edited;
-    }
-    this.todoService.storeTodoList(list, this.data?.list?.id).then((result) => {
+    const { name, keepDone } = this.listForm.value;
+    const existingId = this.data?.list?.id;
+    const saved = existingId
+      ? this.todoService.updateTodoListSettings(existingId, { name, keepDone }, this.userID)
+      : this.todoService.storeTodoList(this.newList(name, keepDone));
+    saved.then((result) => {
       this.dialogRef.close(result);
     });
+  }
+
+  private newList(name: string, keepDone: boolean): Omit<TodoList, 'id'> {
+    const now = new Date();
+    return { name, keepDone, items: [], author: this.userID, created: now, edited: now, editedBy: this.userID };
   }
 }

@@ -142,6 +142,28 @@ describe('TodoService.sendOpenItems', () => {
   });
 });
 
+describe('TodoService.updateTodoListSettings', () => {
+  let service: TodoService;
+  let api: jasmine.SpyObj<Pick<ApiService, 'updateDocumentInCollection'>>;
+
+  beforeEach(() => {
+    api = jasmine.createSpyObj('ApiService', ['updateDocumentInCollection']);
+    api.updateDocumentInCollection.and.resolveTo();
+    const module = testModule();
+    TestBed.configureTestingModule({ ...module, providers: [...module.providers!, { provide: ApiService, useValue: api }] });
+    service = TestBed.inject(TodoService);
+  });
+
+  it('writes name and keepDone without touching the items, so items added elsewhere stay', async () => {
+    await service.updateTodoListSettings('dst', { name: 'Wocheneinkauf', keepDone: true }, 'u1');
+    const [documentID, collectionID, data] = api.updateDocumentInCollection.calls.mostRecent().args;
+    expect([documentID, collectionID]).toEqual(['dst', 'todo']);
+    expect(data).toEqual(jasmine.objectContaining({ name: 'Wocheneinkauf', keepDone: true, editedBy: 'u1' }));
+    expect(data.edited).toEqual(jasmine.any(Date));
+    expect('items' in data).toBeFalse();
+  });
+});
+
 describe('TodoService.deleteTodoItem', () => {
   let service: TodoService;
   let api: jasmine.SpyObj<Pick<ApiService, 'removeFromArray' | 'deleteDocumentFromCollection' | 'updateDocumentInCollection'>>;
