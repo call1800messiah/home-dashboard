@@ -1,9 +1,9 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom, of } from 'rxjs';
 
-import { SendItemsComponent } from './send-items.component';
+import { OFFLINE_MESSAGE, SendItemsComponent } from './send-items.component';
 import { SendSummaryComponent } from '../send-summary/send-summary.component';
 import { TodoModule } from '../../todo.module';
 import { TodoService } from '../../services/todo.service';
@@ -135,17 +135,24 @@ describe('SendItemsComponent', () => {
     expect(todoService.sendOpenItems).toHaveBeenCalledTimes(1);
   });
 
-  it('releases the button and explains when the send waits for a connection', fakeAsync(() => {
+  it('does not try to send while offline and explains why', async () => {
     render();
     component.selectTarget('shopping');
-    // Offline, Firestore keeps the batch queued: the promise neither resolves nor rejects.
-    todoService.sendOpenItems.and.returnValue(new Promise(() => undefined));
-    component.send();
-    tick(10000);
-    expect(snackBar.open).toHaveBeenCalledWith('Keine Verbindung: wird gesendet, sobald du online bist', undefined, jasmine.anything());
+    spyOnProperty(navigator, 'onLine').and.returnValue(false);
+    await component.send();
+    expect(todoService.sendOpenItems).not.toHaveBeenCalled();
+    expect(snackBar.open).toHaveBeenCalledWith(OFFLINE_MESSAGE, undefined, jasmine.anything());
+  });
+
+  it('explains when the connection drops during the send', async () => {
+    render();
+    component.selectTarget('shopping');
+    todoService.sendOpenItems.and.rejectWith(Object.assign(new Error('client is offline'), { code: 'unavailable' }));
+    await component.send();
+    expect(snackBar.open).toHaveBeenCalledWith(OFFLINE_MESSAGE, undefined, jasmine.anything());
     expect(component.sending).toBeFalse();
     expect(dialog.open).not.toHaveBeenCalled();
-  }));
+  });
 
   it('shows "Senden fehlgeschlagen" on failure', async () => {
     render();

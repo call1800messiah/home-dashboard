@@ -7,10 +7,10 @@ import type { TodoItem } from '../models/todo-item';
 import type { TodoItemDbo } from '../models/todo-item.dbo';
 import type { TodoList } from '../models/todo-list';
 import type { TodoListDbo } from '../models/todo-list.dbo';
-import { ApiService, BatchSet } from '../../core/services/api.service';
+import { ApiService, DocumentWrite, Transaction } from '../../core/services/api.service';
 import { DataService } from '../../core/services/data.service';
 import { UtilService } from '../../core/services/util.service';
-import { planSend, SendSummary } from './send-items';
+import { planSend, SendPlan, SendSummary } from './send-items';
 
 
 
@@ -61,27 +61,43 @@ export class TodoService {
   }
 
   /**
-   * Sends the open items of one list to another in a single batch: matching items there are
+   * Sends the open items of one list to another in a single transaction: matching items there are
    * unticked or get the new quantity, the rest are added at the top. Rejects if a list is
    * missing or the write fails, in which case nothing was changed.
    */
   async sendOpenItems(sourceListId: string, targetListId: string, userId: string): Promise<SendSummary> {
     const lists = await firstValueFrom(this.getTodoLists());
     const source = lists.find((list) => list.id === sourceListId);
-    const target = lists.find((list) => list.id === targetListId);
-    if (!source || !target) {
+    if (!source || !lists.some((list) => list.id === targetListId)) {
       throw new Error(`Todo list ${source ? targetListId : sourceListId} not found`);
     }
+    // The open items as this device shows them; the target is read fresh from the server.
+    const sourceItems = source.items.filter((item) => item && !item.done);
 
-    // Items whose document was deleted come through as undefined.
-    const targetItems = target.items.filter(Boolean);
-    const plan = planSend(source.items.filter((item) => item && !item.done), targetItems);
-    if (plan.updates.length === 0 && plan.newItems.length === 0) {
+    return this.api.runTransaction(async (transaction) => {
+      const target = await transaction.get(TodoService.collectionLists, targetListId);
+      if (!target) {
+        throw new Error(`Todo list ${targetListId} not found`);
+      }
+      const itemIds: string[] = target['items'] ?? [];
+      const found = await Promise.all(itemIds.map(async (id) => {
+        const data = await transaction.get(TodoService.collectionItems, id);
+        return data ? { ...data, id } as TodoItem : undefined;
+      }));
+      // Items whose document was deleted are left out, and so dropped from the list.
+      const targetItems = found.filter((item): item is TodoItem => item !== undefined);
+      const plan = planSend(sourceItems, targetItems);
+      if (plan.updates.length > 0 || plan.newItems.length > 0) {
+        this.writeSend(transaction, plan, targetListId, targetItems, userId);
+      }
       return plan.summary;
-    }
+    });
+  }
+
+  private writeSend(transaction: Transaction, plan: SendPlan, targetListId: string, targetItems: TodoItem[], userId: string): void {
 
     const now = new Date();
-    const updates: BatchSet[] = plan.updates.map(({ itemId, content, untick }) => ({
+    const updates: DocumentWrite[] =plan.updates.map(({ itemId, content, untick }) => ({
       collectionID: TodoService.collectionItems,
       documentID: itemId,
       data: {
@@ -92,15 +108,15 @@ export class TodoService {
       },
       merge: true,
     }));
-    const newItems: BatchSet[] = plan.newItems.map((content) => ({
+    const newItems: DocumentWrite[] =plan.newItems.map((content) => ({
       collectionID: TodoService.collectionItems,
       documentID: this.api.createId(),
       data: { author: userId, content, created: now, done: false, edited: now, editedBy: userId },
       merge: false,
     }));
-    const list: BatchSet = {
+    const list: DocumentWrite = {
       collectionID: TodoService.collectionLists,
-      documentID: target.id,
+      documentID: targetListId,
       data: {
         items: [...newItems.map((item) => item.documentID), ...targetItems.map((item) => item.id)],
         edited: now,
@@ -109,8 +125,7 @@ export class TodoService {
       merge: true,
     };
 
-    await this.api.batchWrite([...updates, ...newItems, list]);
-    return plan.summary;
+    [...updates, ...newItems, list].forEach((write) => transaction.set(write));
   }
 
   storeEditedTodoItem(item: Omit<TodoItem, 'id'>, itemId: string): Promise<boolean | string> {
@@ -146,26 +161,9 @@ export class TodoService {
     });
   }
 
+  /** Removes just this id, so items another device added to the list meanwhile stay. */
   private deleteTodoItemFromList(itemId: string, listId: string): Promise<void> {
-    return new Promise((resolve) => {
-      this.getListById(listId).pipe(
-        take(1),
-      ).subscribe(list => {
-        if (list) {
-          const newList = {
-            ...list,
-            items: list.items.filter(item => item.id !== itemId),
-          };
-          // @ts-ignore
-          delete newList.id;
-          this.storeTodoList(newList, listId).then(() => {
-            resolve();
-          });
-        } else {
-          resolve();
-        }
-      });
-    });
+    return this.api.removeFromArray(listId, TodoService.collectionLists, 'items', itemId);
   }
 
   private getTodoItems(): Observable<TodoItem[]> {

@@ -129,6 +129,8 @@ An item that was unticked and got a new quantity appears under "Wieder offen" wi
 
 *My call:* a send is all or nothing. All item updates, the new item documents and the target list's item array go into one Firestore write batch, so a failure leaves the target list unchanged. On failure, show an error message ("Senden fehlgeschlagen") and no summary.
 
+*Changed 2026-11-13:* the batch became a Firestore transaction that reads the target list and its items from the server. A batch queued offline could commit later with an outdated item array and drop items another device had added meanwhile. Sending now needs a connection: offline, the button shows "Keine Verbindung: Senden geht nur online" instead of queueing. Ticking items is unaffected and still works offline. Deleting an item now removes just its ID from the list with `arrayRemove`. Adding an item still rewrites the whole array, so an offline add can still drop items sent meanwhile; fixing that needs a different way of storing list order.
+
 ## Constraints
 
 - Angular 22 with `@angular/fire` compat on `develop`; the app is module-based (`standalone: false`) and German-language.

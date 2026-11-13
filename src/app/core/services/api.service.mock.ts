@@ -110,12 +110,17 @@ function clone<T>(value: T): T {
   return isMap(value) ? mapValues(value, clone) as T : value;
 }
 
-/** Same shape as BatchSet in api.service.ts, which this file replaces in the mock build. */
-export interface BatchSet {
+/** Same shapes as in api.service.ts, which this file replaces in the mock build. */
+export interface DocumentWrite {
   collectionID: string;
   documentID: string;
   data: object;
   merge: boolean;
+}
+
+export interface Transaction {
+  get(collectionID: string, documentID: string): Promise<Record<string, any> | undefined>;
+  set(write: DocumentWrite): void;
 }
 
 function generateId(): string {
@@ -139,20 +144,6 @@ export class ApiService {
     const collection = this.getCollection(collectionID);
     collection.next({ ...collection.value, [id]: data });
     return { id } as DocumentReference<unknown>;
-  }
-
-  /** Validates every operation before applying any, so a bad one changes nothing, like a Firestore batch. */
-  async batchWrite(operations: BatchSet[]): Promise<void> {
-    const writes = operations.map((operation) => ({
-      ...operation,
-      stored: toStored(operation.data, operation.merge) as DocumentData,
-    }));
-    await this.whenLoaded();
-    writes.forEach(({ collectionID, documentID, merge: mergeIntoExisting, stored }) => {
-      const collection = this.getCollection(collectionID);
-      const document = mergeIntoExisting ? merge(collection.value[documentID] ?? {}, stored) as DocumentData : stored;
-      collection.next({ ...collection.value, [documentID]: document });
-    });
   }
 
   createId(): string {
@@ -203,6 +194,37 @@ export class ApiService {
 
   async logout(): Promise<void> {
     this.user$.next(null);
+  }
+
+  async removeFromArray(documentID: string, collectionID: string, field: string, value: unknown): Promise<void> {
+    await this.whenLoaded();
+    const collection = this.getCollection(collectionID);
+    const document = collection.value[documentID];
+    if (!document) {
+      throw new Error(`No document to update: ${collectionID}/${documentID}`);
+    }
+    const current = document[field];
+    const kept = Array.isArray(current) ? current.filter((entry) => entry !== value) : [];
+    collection.next({ ...collection.value, [documentID]: { ...document, [field]: kept } });
+  }
+
+  /**
+   * Nothing else writes while the work runs, so it runs once. Writes are validated before any is
+   * applied, so a bad one changes nothing, like a failed Firestore transaction.
+   */
+  async runTransaction<T>(work: (transaction: Transaction) => Promise<T>): Promise<T> {
+    await this.whenLoaded();
+    const writes: (DocumentWrite & { stored: DocumentData })[] = [];
+    const result = await work({
+      get: async (collectionID, documentID) => clone(this.getCollection(collectionID).value[documentID]),
+      set: (write) => writes.push({ ...write, stored: toStored(write.data, write.merge) as DocumentData }),
+    });
+    writes.forEach(({ collectionID, documentID, merge: mergeIntoExisting, stored }) => {
+      const collection = this.getCollection(collectionID);
+      const document = mergeIntoExisting ? merge(collection.value[documentID] ?? {}, stored) as DocumentData : stored;
+      collection.next({ ...collection.value, [documentID]: document });
+    });
+    return result;
   }
 
   async updateDocumentInCollection(documentID: string, collectionID: string, data: any): Promise<void> {
