@@ -44,6 +44,10 @@
 
     <fieldset>
       <legend>Zutaten</legend>
+      <mat-form-field appearance="fill" class="portions">
+        <input matInput type="number" id="portions" formControlName="portions" step="1" min="1" />
+        <mat-label>Mengen gelten für Portionen</mat-label>
+      </mat-form-field>
       @for (requirement of requirements; track requirement) {
         <div class="ingredient">
           <div class="name">

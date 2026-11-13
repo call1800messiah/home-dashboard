@@ -30,6 +30,7 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
     'new-uni': new FormControl(''),
     instructions: new FormControl(''),
     name: new FormControl(''),
+    portions: new FormControl<number | null>(1),
     summary: new FormControl(''),
     time: new FormControl('00:00'),
     type: new FormControl(''),
@@ -154,9 +155,17 @@ export class EditRecipeComponent implements OnInit, OnDestroy {
 
 
   save(): void {
-    const time = this.recipeForm.value.time.split(':');
+    const { portions, ...formValue } = this.recipeForm.value;
+    const divisor = portions >= 1 ? portions : 1;
+    // Amounts are stored per portion, so scale down what was entered for several portions
+    Object.keys(formValue)
+      .filter((key) => key.startsWith('ing-') && key.endsWith('-amo'))
+      .forEach((key) => {
+        formValue[key] = Math.round((formValue[key] / divisor) * 100) / 100;
+      });
+    const time = formValue.time.split(':');
     const recipe: Recipe = {
-      ...this.recipeForm.value,
+      ...formValue,
       edited: new Date(),
       editedBy: this.userID,
       time: {
