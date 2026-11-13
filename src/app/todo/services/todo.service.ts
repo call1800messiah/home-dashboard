@@ -10,7 +10,7 @@ import type { TodoListDbo } from '../models/todo-list.dbo';
 import { ApiService, DocumentWrite, Transaction } from '../../core/services/api.service';
 import { DataService } from '../../core/services/data.service';
 import { UtilService } from '../../core/services/util.service';
-import { planSend, SendPlan, SendSummary, sourceFromText } from '../../shared/utils/send-items';
+import { AmountMode, planSend, SendPlan, SendSource, SendSummary, sourceFromText } from '../../shared/utils/send-items';
 
 
 
@@ -72,8 +72,17 @@ export class TodoService {
       throw new Error(`Todo list ${source ? targetListId : sourceListId} not found`);
     }
     // The open items as this device shows them; the target is read fresh from the server.
-    const sourceItems = source.items.filter((item) => item && !item.done);
+    const sources = source.items.filter((item) => item && !item.done).map((item) => sourceFromText(item.content));
 
+    return this.sendItems(sources, targetListId, userId);
+  }
+
+  /**
+   * Sends items to a list in a single transaction: matching items there are unticked or get the
+   * new quantity (replaced or, in 'add' mode, summed), the rest are added at the top. Rejects if the
+   * list is missing or the write fails, in which case nothing was changed.
+   */
+  sendItems(sources: SendSource[], targetListId: string, userId: string, mode: AmountMode = 'replace'): Promise<SendSummary> {
     return this.api.runTransaction(async (transaction) => {
       const target = await transaction.get(TodoService.collectionLists, targetListId);
       if (!target) {
@@ -86,7 +95,7 @@ export class TodoService {
       }));
       // Items whose document was deleted are left out, and so dropped from the list.
       const targetItems = found.filter((item): item is TodoItem => item !== undefined);
-      const plan = planSend(sourceItems.map((item) => sourceFromText(item.content)), targetItems);
+      const plan = planSend(sources, targetItems, mode);
       if (plan.updates.length > 0 || plan.newItems.length > 0) {
         this.writeSend(transaction, plan, targetListId, targetItems, userId);
       }
