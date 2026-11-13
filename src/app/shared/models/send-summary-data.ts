@@ -1,4 +1,4 @@
-import type { SendSummary } from '../services/send-items';
+import type { SendSummary } from '../utils/send-items';
 
 export interface SendSummaryData {
   targetName: string;

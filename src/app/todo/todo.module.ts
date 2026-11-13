@@ -9,7 +9,6 @@ import { TodoRoutingModule } from './todo-routing.module';
 import { AddTodoItemComponent } from './components/add-todo-item/add-todo-item.component';
 import { EditTodoItemComponent } from './components/edit-todo-item/edit-todo-item.component';
 import { SortItemComponent } from './components/sort-item/sort-item.component';
-import { SendSummaryComponent } from './components/send-summary/send-summary.component';
 import { SendItemsComponent } from './components/send-items/send-items.component';
 
 
@@ -23,7 +22,6 @@ import { SendItemsComponent } from './components/send-items/send-items.component
     EditTodoListComponent,
     AddTodoItemComponent,
     EditTodoItemComponent,
-    SendSummaryComponent,
     SendItemsComponent,
   ],
   imports: [

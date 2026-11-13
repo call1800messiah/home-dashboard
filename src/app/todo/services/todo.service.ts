@@ -10,7 +10,7 @@ import type { TodoListDbo } from '../models/todo-list.dbo';
 import { ApiService, DocumentWrite, Transaction } from '../../core/services/api.service';
 import { DataService } from '../../core/services/data.service';
 import { UtilService } from '../../core/services/util.service';
-import { planSend, SendPlan, SendSummary } from './send-items';
+import { planSend, SendPlan, SendSummary } from '../../shared/utils/send-items';
 
 
 

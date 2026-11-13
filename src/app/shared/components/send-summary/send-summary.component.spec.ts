@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { SendSummaryComponent } from './send-summary.component';
-import { TodoModule } from '../../todo.module';
+import { SharedModule } from '../../shared.module';
 import { testModule } from '../../../testing/test-module';
 import type { SendSummaryData } from '../../models/send-summary-data';
 
@@ -21,7 +21,7 @@ describe('SendSummaryComponent', () => {
   };
 
   beforeEach(async () => {
-    const module = testModule(TodoModule);
+    const module = testModule(SharedModule);
     await TestBed.configureTestingModule({
       ...module,
       providers: [...module.providers!, { provide: MAT_DIALOG_DATA, useValue: data }],

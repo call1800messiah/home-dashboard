@@ -1,4 +1,4 @@
-import type { TodoItem } from '../models/todo-item';
+import type { TodoItem } from '../../todo/models/todo-item';
 import { isCloseName, normalizeName, planSend, splitQuantity } from './send-items';
 
 describe('splitQuantity', () => {

@@ -3,7 +3,7 @@
  * See docs/superpowers/specs/2026-11-03-copy-items-between-lists-design.md.
  */
 
-import type { TodoItem } from '../models/todo-item';
+import type { TodoItem } from '../../todo/models/todo-item';
 
 export interface SplitText {
   name: string;

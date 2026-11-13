@@ -2,7 +2,7 @@ import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import type { SendSummaryData } from '../../models/send-summary-data';
-import type { SendSummary } from '../../services/send-items';
+import type { SendSummary } from '../../utils/send-items';
 
 interface SummaryGroup {
   key: keyof SendSummary;

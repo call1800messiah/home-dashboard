@@ -3,12 +3,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom, of } from 'rxjs';
 
-import { OFFLINE_MESSAGE, SendItemsComponent } from './send-items.component';
-import { SendSummaryComponent } from '../send-summary/send-summary.component';
+import { SendItemsComponent } from './send-items.component';
+import { SEND_FAILED_MESSAGE, SEND_OFFLINE_MESSAGE } from '../../../shared/utils/send-messages';
+import { SendSummaryComponent } from '../../../shared/components/send-summary/send-summary.component';
 import { TodoModule } from '../../todo.module';
 import { TodoService } from '../../services/todo.service';
 import { testModule } from '../../../testing/test-module';
-import type { SendSummary } from '../../services/send-items';
+import type { SendSummary } from '../../../shared/utils/send-items';
 import type { TodoItem } from '../../models/todo-item';
 import type { TodoList } from '../../models/todo-list';
 
@@ -141,7 +142,7 @@ describe('SendItemsComponent', () => {
     spyOnProperty(navigator, 'onLine').and.returnValue(false);
     await component.send();
     expect(todoService.sendOpenItems).not.toHaveBeenCalled();
-    expect(snackBar.open).toHaveBeenCalledWith(OFFLINE_MESSAGE, undefined, jasmine.anything());
+    expect(snackBar.open).toHaveBeenCalledWith(SEND_OFFLINE_MESSAGE, undefined, jasmine.anything());
   });
 
   it('explains when the connection drops during the send', async () => {
@@ -149,7 +150,7 @@ describe('SendItemsComponent', () => {
     component.selectTarget('shopping');
     todoService.sendOpenItems.and.rejectWith(Object.assign(new Error('client is offline'), { code: 'unavailable' }));
     await component.send();
-    expect(snackBar.open).toHaveBeenCalledWith(OFFLINE_MESSAGE, undefined, jasmine.anything());
+    expect(snackBar.open).toHaveBeenCalledWith(SEND_OFFLINE_MESSAGE, undefined, jasmine.anything());
     expect(component.sending).toBeFalse();
     expect(dialog.open).not.toHaveBeenCalled();
   });
@@ -159,7 +160,7 @@ describe('SendItemsComponent', () => {
     component.selectTarget('shopping');
     todoService.sendOpenItems.and.rejectWith(new Error('offline'));
     await component.send();
-    expect(snackBar.open).toHaveBeenCalledWith('Senden fehlgeschlagen', undefined, jasmine.anything());
+    expect(snackBar.open).toHaveBeenCalledWith(SEND_FAILED_MESSAGE, undefined, jasmine.anything());
     expect(dialog.open).not.toHaveBeenCalled();
   });
 });
