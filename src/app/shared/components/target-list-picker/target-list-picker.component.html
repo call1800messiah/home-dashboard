@@ -1,0 +1,8 @@
+<mat-form-field appearance="fill" subscriptSizing="dynamic">
+  <mat-label>{{label}}</mat-label>
+  <mat-select [value]="targetId" (selectionChange)="select($event.value)">
+    @for (list of lists; track list.id) {
+      <mat-option [value]="list.id">{{list.name}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>

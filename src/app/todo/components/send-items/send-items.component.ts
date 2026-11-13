@@ -39,24 +39,6 @@ export class SendItemsComponent implements OnInit {
     this.targets$ = this.todoService.getTodoLists().pipe(
       map((lists) => lists.filter((list) => list.id !== this.list.id)),
     );
-
-    const stored = this.readStoredTarget();
-    if (stored) {
-      firstValueFrom(this.targets$).then((targets) => {
-        if (targets.some((target) => target.id === stored)) {
-          this.targetId = stored;
-        }
-      });
-    }
-  }
-
-  selectTarget(id: string): void {
-    this.targetId = id;
-    try {
-      localStorage.setItem(this.storageKey, id);
-    } catch {
-      // Storage can be unavailable (private mode); the choice then lasts for this visit only.
-    }
   }
 
   async send(): Promise<void> {
@@ -86,18 +68,6 @@ export class SendItemsComponent implements OnInit {
       this.snackBar.open(offline ? SEND_OFFLINE_MESSAGE : SEND_FAILED_MESSAGE, undefined, { duration: MESSAGE_DURATION });
     } finally {
       this.sending = false;
-    }
-  }
-
-  private get storageKey(): string {
-    return `todo-send-target-${this.list.id}`;
-  }
-
-  private readStoredTarget(): string | null {
-    try {
-      return localStorage.getItem(this.storageKey);
-    } catch {
-      return null;
     }
   }
 }
